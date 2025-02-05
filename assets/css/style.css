@@ -22,10 +22,21 @@
     align-items: center;
     height: 100vh;
 }
+.error-message {
+    color: #ff0000; /* Red color for the text */
+    font-size: 14px; /* Adjust the font size as needed */
+    font-weight: bold; /* Make the text bold */
+    text-align: center; /* Center the text */
+    margin-top: 10px; /* Add some space above the message */
+    padding: 10px; /* Add padding around the text */
+    background-color: #ffe6e6; /* Light red background */
+    border: 1px solid #ff0000; /* Red border */
+    border-radius: 5px; /* Rounded corners */
+}
 .login-box {
     width: 400px;
     background-color: #fff;
-    padding: 30px;
+    padding: 60px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
