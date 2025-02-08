@@ -1,6 +1,6 @@
 composer require <br />
 php bin/console doctrine:database:create <br />
-php bin/console doctrine:fixtures:load
-admin account
-Email:admin@example.com
-password:admin123
+php bin/console doctrine:fixtures:load<br />
+admin account<br />
+Email:admin@example.com<br />
+password:admin123<br />
