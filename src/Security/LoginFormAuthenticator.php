@@ -14,15 +14,16 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
-
+use Symfony\Component\Routing\RouterInterface;
 class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'app_login';
-
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
+    private RouterInterface $router;
+    public function __construct(private UrlGeneratorInterface $urlGenerator,RouterInterface $router)
     {
+        $this->router = $router;
     }
 
     public function authenticate(Request $request): Passport
@@ -41,13 +42,13 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-            return new RedirectResponse($targetPath);
+        // Redirect user to the admin page if they have ROLE_ADMIN
+        if (in_array('ROLE_ADMIN', $token->getRoleNames())) {
+            return new RedirectResponse($this->router->generate('admin_dashboard'));  // Redirect to /admin page
         }
 
-        // For example:
-        // return new RedirectResponse($this->urlGenerator->generate('some_route'));
-        return new RedirectResponse($this->urlGenerator->generate('app_home'));
+        // Redirect to home page for other users
+        return new RedirectResponse($this->router->generate('home'));  // Redirect to home page for ROLE_USER or others
     }
 
     protected function getLoginUrl(Request $request): string
