@@ -27,7 +27,7 @@ class UserFixtures extends Fixture
         $user->setPassword($hashedPassword);
 
         $user->setIsVerified(true);
-        $user->setFullName('Default Admin');
+        $user->setFullName('Firma Admin');
 
         $manager->persist($user);
         $manager->flush();

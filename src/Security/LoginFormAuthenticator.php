@@ -48,7 +48,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         // Redirect to home page for other users
-        return new RedirectResponse($this->router->generate('home'));  // Redirect to home page for ROLE_USER or others
+        return new RedirectResponse($this->router->generate('app_home'));  // Redirect to home page for ROLE_USER or others
     }
 
     protected function getLoginUrl(Request $request): string

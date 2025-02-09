@@ -231,6 +231,7 @@ body {
 
 /*** Topbar Start ***/
 .fixed-top {
+    position: relative;
     transition: 0.5s;
     background: var(--bs-white);
     border: 0;
@@ -651,3 +652,26 @@ body {
 }
 /*** Footer End ***/
 
+/* Ensure the html and body take up the full height of the viewport */
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header (Navbar) */
+header {
+    flex-shrink: 0; /* Prevent the header from shrinking */
+}
+
+/* Main Content Area */
+main {
+    flex-grow: 1; /* Allow the main content to grow and fill the remaining space */
+    padding: 20px; /* Optional: Add padding for better spacing */
+}
+
+/* Footer */
+footer {
+    flex-shrink: 0; /* Prevent the footer from shrinking */
+}

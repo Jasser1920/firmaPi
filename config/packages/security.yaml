@@ -29,7 +29,7 @@ security:
         # ✅ Only ROLE_ADMIN can access /admin (others are redirected)
         - { path: ^/admin, roles: ROLE_ADMIN }
         # ✅ Only authenticated users can access /home
-        - { path: ^/home, roles: ROLE_USER }
+        - { path: ^/home, roles: ROLE_BUYER }
 
         # ❌ Redirect all other pages to login if not authenticated
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
