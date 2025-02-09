@@ -1,0 +1,49 @@
+{# templates/profile/edit.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Edit Your Profile</h1>
+
+    {# Display success or error messages #}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {# Render the form #}
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.email, 'Email') }}
+            {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.email) }}
+        </div>
+
+        
+
+        <div class="mb-3">
+            {{ form_label(form.password, 'Password') }}
+            {{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.password) }}
+        </div>
+
+
+        <div class="mb-3">
+            {{ form_label(form.fullName, 'Full Name') }}
+            {{ form_widget(form.fullName, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.fullName) }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

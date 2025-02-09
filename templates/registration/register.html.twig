@@ -1,0 +1,75 @@
+{# templates/registration/register.html.twig #}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Fruitables</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <!-- Template Stylesheet -->
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+
+<div class="register-container">
+    <div class="register-box">
+        <h2>Create an Account</h2>
+        {{ form_start(registrationForm, {'attr': {'class': 'register-form'}}) }}
+            <div class="form-group">
+                {{ form_label(registrationForm.fullName, 'Full Name') }}
+                {{ form_widget(registrationForm.fullName, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Enter your full name'
+                    }
+                }) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.email, 'Email') }}
+                {{ form_widget(registrationForm.email, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Enter your email'
+                    }
+                }) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.plainPassword.first, 'Password') }}
+                {{ form_widget(registrationForm.plainPassword.first, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Enter your password'
+                    }
+                }) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.plainPassword.second, 'Confirm Password') }}
+                {{ form_widget(registrationForm.plainPassword.second, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Confirm your password'
+                    }
+                }) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(registrationForm.role, {
+                'label': 'Register As',
+                'attr': {'class': 'form-control'}
+                }) }}
+            </div>
+            <div class="form-group">
+                {{ form_widget(registrationForm.agreeTerms) }}
+                {{ form_label(registrationForm.agreeTerms, 'I agree to the terms and conditions') }}
+            </div>
+            
+            <button type="submit" class="register-btn">Register</button>
+        {{ form_end(registrationForm) }}
+        <p>Already have an account? <a href="{{ path('app_login') }}">Login</a></p>
+    </div>
+</div>
+
+</body>
+</html>
