@@ -5,6 +5,7 @@
         "This file is @generated automatically"
     ],
     "content-hash": "f3311dc074f602b0320fb5c763c99b87",
+
     "packages": [
         {
             "name": "composer/semver",
@@ -7094,6 +7095,7 @@
             "time": "2024-09-25T14:18:03+00:00"
         },
         {
+
             "name": "symfony/ux-turbo",
             "version": "v2.22.1",
             "source": {
@@ -7735,6 +7737,7 @@
             "time": "2024-12-09T18:44:25+00:00"
         },
         {
+
             "name": "twig/extra-bundle",
             "version": "v3.19.0",
             "source": {
@@ -8017,6 +8020,7 @@
     ],
     "packages-dev": [
         {
+
             "name": "doctrine/data-fixtures",
             "version": "2.0.2",
             "source": {
@@ -8186,6 +8190,7 @@
             "time": "2024-12-05T18:35:55+00:00"
         },
         {
+
             "name": "masterminds/html5",
             "version": "2.9.0",
             "source": {
