@@ -1,4 +1,59 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title mb-0">
+                <i class="fas fa-file-invoice me-2"></i> Commande Details
+            </h3>
+        </div>
+        <div class="card-body">
+            <!-- Date Field -->
+            <div class="mb-3">
+                {{ form_label(form.date, 'Date de Commande', {'label_attr': {'class': 'form-label'}}) }}
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-calendar-alt"></i>
+                    </span>
+                    {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+
+            <!-- Statut Field -->
+            <div class="mb-3">
+                {{ form_label(form.statut, 'Statut de la Commande', {'label_attr': {'class': 'form-label'}}) }}
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-info-circle"></i>
+                    </span>
+                    {{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+
+            <!-- Montant Field -->
+            <div class="mb-3">
+                {{ form_label(form.montant, 'Montant Total', {'label_attr': {'class': 'form-label'}}) }}
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-dollar-sign"></i>
+                    </span>
+                    {{ form_widget(form.montant, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+
+            <!-- Produits Commandés Field -->
+            <div class="mb-3">
+                {{ form_label(form.produitCommande, 'Produits Commandés', {'label_attr': {'class': 'form-label'}}) }}
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-boxes"></i>
+                    </span>
+                    {{ form_widget(form.produitCommande, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <button class="btn btn-primary">
+                <i class="fas fa-save me-2"></i> {{ button_label|default('Save') }}
+            </button>
+        </div>
+    </div>
 {{ form_end(form) }}

@@ -1,3 +1,24 @@
+.card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+.btn-group .btn {
+    margin-right: 10px;
+}
+.breadcrumb {
+    background-color: transparent;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.25rem;
+}
 .logo {
     display: block;
     margin: 0 auto 20px; /* Center the logo and add space below */

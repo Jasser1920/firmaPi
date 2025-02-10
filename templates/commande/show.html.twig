@@ -3,32 +3,56 @@
 {% block title %}Commande{% endblock %}
 
 {% block body %}
-    <h1>Commande</h1>
+    <div class="container mt-5">
+        <!-- Breadcrumb Navigation -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_commande_index') }}">Commandes</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Commande Details</li>
+            </ol>
+        </nav>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ commande.id }}</td>
-            </tr>
-            <tr>
-                <th>Date</th>
-                <td>{{ commande.date ? commande.date|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Statut</th>
-                <td>{{ commande.statut }}</td>
-            </tr>
-            <tr>
-                <th>Montant</th>
-                <td>{{ commande.montant }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_commande_index') }}">back to list</a>
-
-    <a href="{{ path('app_commande_edit', {'id': commande.id}) }}">edit</a>
-
-    {{ include('commande/_delete_form.html.twig') }}
+        <!-- Card Layout -->
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h1 class="card-title mb-0">Commande Details</h1>
+                <i class="fas fa-file-invoice fa-2x"></i> <!-- Font Awesome Icon -->
+            </div>
+            <div class="card-body">
+                <!-- Striped Table with Hover Effect -->
+                <table class="table table-striped table-hover">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ commande.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date</th>
+                            <td>{{ commande.date ? commande.date|date('Y-m-d') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Statut</th>
+                            <td>{{ commande.statut }}</td>
+                        </tr>
+                        <tr>
+                            <th>Montant</th>
+                            <td>{{ commande.montant }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-end">
+                <!-- Button Group for Actions -->
+                <div class="btn-group" role="group">
+                    <a href="{{ path('app_commande_index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                    <a href="{{ path('app_commande_edit', {'id': commande.id}) }}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    {{ include('commande/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
