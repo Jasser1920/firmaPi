@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create New Reclammation{% endblock %}
+
+{% block body %}
+    <h1>Create New Reclammation</h1>
+
+    {# Affichage des erreurs globales du formulaire si elles existent #}
+    {% if form.vars.errors|length > 0 %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for error in form.vars.errors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {# Formulaire de réclamation #}
+    {{ form_start(form) }}
+    
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, { 'attr': {'class': 'form-control'} }) }}
+            {# Affichage des erreurs pour ce champ spécifique #}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.status) }}
+            {{ form_widget(form.status, { 'attr': {'class': 'form-control'} }) }}
+            {# Affichage des erreurs pour ce champ spécifique #}
+            {{ form_errors(form.status) }}
+        </div>
+
+        {# Affichage du bouton de soumission #}
+        <button type="submit" class="btn btn-primary">Save</button>
+    {{ form_end(form) }}
+
+    <br>
+    <a href="{{ path('app_reclammation_index') }}">Back to list</a>
+{% endblock %}

@@ -23,16 +23,16 @@ security:
                 target: app_login  # Redirect to login after logout
 
     access_control:
-        # ✅ Allow non-authenticated users to access login and register pages
-        - { path: ^/(login|register), roles: PUBLIC_ACCESS }
+        # # ✅ Allow non-authenticated users to access login and register pages
+        # - { path: ^/(login|register), roles: PUBLIC_ACCESS }
 
-        # ✅ Only ROLE_ADMIN can access /admin (others are redirected)
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        # ✅ Only authenticated users can access /home
-        - { path: ^/home, roles: ROLE_USER }
+        # # ✅ Only ROLE_ADMIN can access /admin (others are redirected)
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # # ✅ Only authenticated users can access /home
+        # - { path: ^/home, roles: ROLE_USER }
 
-        # ❌ Redirect all other pages to login if not authenticated
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        # # ❌ Redirect all other pages to login if not authenticated
+        # - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
