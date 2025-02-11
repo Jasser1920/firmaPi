@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProductController!{% endblock %}
+
+{% block body %}
+<h1>Liste des produits</h1>
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Liste des produits</h1>
+
+    {%if is_granted('ROLE_AGRICULTEUR')%}
+        <a href="{{path('produit_add')}}" class="btn btn-primary">Ajouter un produit</a>
+    {% endif %}
+
+    <ul>
+        {% for produit in produits %}
+        <li>
+            {{ produit.nom }} - {{ produit.categorie.nom }}
+            {% if is_granted('ROLE_AGRICULTEUR') and produit.agriculteur == app.user %}
+                <a href="{{ path('produit_edit', {id: produit.id}) }}">Modifier</a>
+                <form method="post" action="{{ path('produit_delete', {id: produit.id}) }}" style="display:inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
+                    <button type="submit">Supprimer</button>
+                </form>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

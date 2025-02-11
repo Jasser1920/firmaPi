@@ -20,9 +20,6 @@ class Produit
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $categorie = null;
-
-    #[ORM\Column(length: 255)]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
@@ -49,6 +46,10 @@ class Produit
     #[ORM\ManyToOne(inversedBy: 'listeProduit')]
     private ?Agriculteur $agriculteur = null;
 
+    #[ORM\ManyToOne(inversedBy: 'produits')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categorie $categorie = null;
+
     public function __construct()
     {
         $this->dons = new ArrayCollection();
@@ -67,18 +68,6 @@ class Produit
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getCategorie(): ?string
-    {
-        return $this->categorie;
-    }
-
-    public function setCategorie(string $categorie): static
-    {
-        $this->categorie = $categorie;
 
         return $this;
     }
@@ -193,6 +182,18 @@ class Produit
     public function setAgriculteur(?Agriculteur $agriculteur): static
     {
         $this->agriculteur = $agriculteur;
+
+        return $this;
+    }
+
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?Categorie $categorie): static
+    {
+        $this->categorie = $categorie;
 
         return $this;
     }
