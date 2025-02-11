@@ -1,41 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Evenement index{% endblock %}
+{% block title %}Evenement Index{% endblock %}
 
 {% block body %}
-    <h1>Evenement index</h1>
+    <div class="container mt-4">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h1 class="mb-0">Evenement Index</h1>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Id</th>
+                            <th>Titre</th>
+                            <th>Date</th>
+                            <th>Lieu</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for evenement in evenements %}
+                        <tr>
+                            <td>{{ evenement.id }}</td>
+                            <td>{{ evenement.titre }}</td>
+                            <td>{{ evenement.date ? evenement.date|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>{{ evenement.lieu }}</td>
+                            <td>{{ evenement.desription }}</td>
+                            <td>
+                                <a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-info btn-sm">Show</a>
+                                <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Titre</th>
-                <th>Date</th>
-                <th>Lieu</th>
-                <th>Desription</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for evenement in evenements %}
-            <tr>
-                <td>{{ evenement.id }}</td>
-                <td>{{ evenement.titre }}</td>
-                <td>{{ evenement.date ? evenement.date|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ evenement.lieu }}</td>
-                <td>{{ evenement.desription }}</td>
-                <td>
-                    <a href="{{ path('app_evenement_show', {'id': evenement.id}) }}">show</a>
-                    <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_evenement_new') }}">Create new</a>
+                <div class="mt-3">
+                    <a href="{{ path('app_evenement_new') }}" class="btn btn-success">Create New</a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

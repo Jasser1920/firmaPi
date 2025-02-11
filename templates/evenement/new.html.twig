@@ -1,11 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Evenement{% endblock %}
+{% block title %}New Event{% endblock %}
 
 {% block body %}
-    <h1>Create new Evenement</h1>
+    <div class="container mt-4">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h2 class="mb-0">Create New Event</h2>
+            </div>
+            <div class="card-body">
+                {{ include('evenement/_form.html.twig') }}
 
-    {{ include('evenement/_form.html.twig') }}
-
-    <a href="{{ path('app_evenement_index') }}">back to list</a>
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="{{ path('app_evenement_index') }}" class="btn btn-warning">Back to List</a>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

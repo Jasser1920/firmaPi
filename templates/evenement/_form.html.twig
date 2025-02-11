@@ -1,4 +1,41 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{% extends 'base.html.twig' %}
+
+{% block title %}New Evenement{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h2 class="mb-0">Create New Evenement</h2>
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_label(form.titre, 'Titre') }}
+                    {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.date, 'Date') }}
+                    {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.lieu, 'Lieu') }}
+                    {{ form_widget(form.lieu, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.desription, 'Description') }}
+                    {{ form_widget(form.desription, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.association, 'Association') }}
+                    {{ form_widget(form.association, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="{{ path('app_evenement_index') }}" class="btn btn-warning">Back to List</a>
+                    <button type="submit" class="btn btn-success">{{ button_label|default('Save') }}</button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
