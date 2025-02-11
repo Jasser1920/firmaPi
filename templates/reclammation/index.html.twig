@@ -19,7 +19,8 @@
             <tr>
                 <td>{{ reclammation.id }}</td>
                 <td>{{ reclammation.description }}</td>
-                <td>{{ reclammation.status }}</td>
+                <td>{{ reclammation.status.value }}</td>
+
                 <td>
                     <a href="{{ path('app_reclammation_show', {'id': reclammation.id}) }}">show</a>
                     <a href="{{ path('app_reclammation_edit', {'id': reclammation.id}) }}">edit</a>

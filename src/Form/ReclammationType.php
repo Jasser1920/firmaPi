@@ -21,12 +21,10 @@ class ReclammationType extends AbstractType
                     'En cours'   => StatutReclammation::EN_COURS,
                     'Résolue'    => StatutReclammation::RESOLUE,
                 ],
-                'choice_label' => function ($choice, $key, $value) {
-                    return $choice->name; // Affiche les noms des enums comme 'EN_ATTENTE', 'EN_COURS', etc.
-                },
-                'expanded' => false, // false = menu déroulant, true = boutons radio
-                'multiple' => false, // false = une seule sélection
+                'choice_label' => fn($choice) => $choice->label(), // Show readable labels
+                'choice_value' => fn(?StatutReclammation $enum) => $enum?->value, // Convert enum to string
             ]);
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void

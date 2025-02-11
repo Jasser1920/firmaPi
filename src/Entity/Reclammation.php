@@ -16,9 +16,10 @@ class Reclammation
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
+    #[ORM\Column(type: 'string', length: 50, enumType: StatutReclammation::class)]
+    private ?StatutReclammation $status = null;
+    
 
-    #[ORM\Column(enumType:StatutReclammation::class)]
-     private ?StatutReclammation $status = null;
 
     public function getId(): ?int
     {
@@ -48,8 +49,9 @@ class Reclammation
     }
 
     public function setStatus(StatutReclammation $statusReclammation): self
-    {
-        $this->status = $statusReclammation;
-        return $this;
-    }
+{
+    $this->status = $statusReclammation;
+    return $this;
+}
+
 }
