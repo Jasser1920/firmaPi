@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use App\Enum\Role;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur
+class Utilisateur 
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,20 +22,22 @@ class Utilisateur
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     private ?string $motdepasse = null;
 
-    #[ORM\Column]
-    private ?int $telephone = null;
+    #[ORM\Column(length: 20)] // Changed to string for better phone number handling
+    private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
     private ?string $adresse = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $role = null;
+    #[ORM\Column(type: 'string', enumType: Role::class)]
+    private Role $role;
+
+    // Getters and Setters
 
     public function getId(): ?int
     {
@@ -47,7 +52,6 @@ class Utilisateur
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -59,7 +63,6 @@ class Utilisateur
     public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
-
         return $this;
     }
 
@@ -71,7 +74,6 @@ class Utilisateur
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -83,19 +85,17 @@ class Utilisateur
     public function setMotdepasse(string $motdepasse): static
     {
         $this->motdepasse = $motdepasse;
-
         return $this;
     }
 
-    public function getTelephone(): ?int
+    public function getTelephone(): ?string
     {
         return $this->telephone;
     }
 
-    public function setTelephone(int $telephone): static
+    public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
-
         return $this;
     }
 
@@ -107,19 +107,34 @@ class Utilisateur
     public function setAdresse(string $adresse): static
     {
         $this->adresse = $adresse;
-
         return $this;
     }
 
-    public function getRole(): ?string
+    public function getRole(): Role
     {
         return $this->role;
     }
 
-    public function setRole(string $role): static
+    public function setRole(Role $role): self
     {
         $this->role = $role;
-
         return $this;
+    }
+
+    // Implement UserInterface methods
+
+    public function getRoles(): array
+    {
+        return [$this->role->value];
+    }
+
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
     }
 }

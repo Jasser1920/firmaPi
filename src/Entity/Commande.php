@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\StatutCommande;
 use App\Repository\CommandeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,8 +21,14 @@ class Commande
     #[ORM\Column]
     private ?float $total = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $statut = null;
+    #[ORM\Column(type: 'string', enumType: StatutCommande::class)]
+    private StatutCommande $statut;
+
+    public function __construct()
+    {
+        $this->date_commande = new \DateTime(); // Set the order date automatically
+        $this->statut = StatutCommande::EN_ATTENTE; // Default status
+    }
 
     public function getId(): ?int
     {
@@ -52,12 +59,12 @@ class Commande
         return $this;
     }
 
-    public function getStatut(): ?string
+    public function getStatut(): StatutCommande
     {
         return $this->statut;
     }
 
-    public function setStatut(string $statut): static
+    public function setStatut(StatutCommande $statut): static
     {
         $this->statut = $statut;
 

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\StatutLivraison;
 use App\Repository\LivraisonRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,8 +24,13 @@ class Livraison
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_livraison = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $statut = null;
+    #[ORM\Column(type: 'string', enumType: StatutLivraison::class)]
+    private StatutLivraison $statut;
+
+    public function __construct()
+    {
+        $this->statut = StatutLivraison::EN_ATTENTE; // Default status
+    }
 
     public function getId(): ?int
     {
@@ -67,12 +73,12 @@ class Livraison
         return $this;
     }
 
-    public function getStatut(): ?string
+    public function getStatut(): StatutLivraison
     {
         return $this->statut;
     }
 
-    public function setStatut(string $statut): static
+    public function setStatut(StatutLivraison $statut): static
     {
         $this->statut = $statut;
 
