@@ -15,7 +15,7 @@ enum StatutReclammation: string
             self::EN_ATTENTE => 'En attente',
             self::EN_COURS => 'En cours',
             self::RESOLUE => 'Résolue',
-            self::REJETEE => 'Rejetée', // Corrected label
+            self::REJETEE => 'Rejetée',
         };
     }
 }

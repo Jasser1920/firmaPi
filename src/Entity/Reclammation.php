@@ -26,19 +26,16 @@ class Reclammation
     #[ORM\Column(type: 'string', enumType: StatutReclammation::class)]
     private StatutReclammation $statut;
 
-    /**
-     * @var Collection<int, ReponseReclamation>
-     */
-    #[ORM\OneToMany(targetEntity: ReponseReclamation::class, mappedBy: 'reclamation')]
-    private Collection $reponseReclamations;
-
     #[ORM\ManyToOne(inversedBy: 'reclamation')]
     private ?Utilisateur $utilisateur = null;
 
+    #[ORM\OneToMany(targetEntity: ReponseReclamation::class, mappedBy: 'reclamation')]
+    private Collection $reponseReclamations;
+
     public function __construct()
     {
-        $this->date_creation = new \DateTime(); // Set the creation date automatically
-        $this->statut = StatutReclammation::EN_ATTENTE; // Default status
+        $this->date_creation = new \DateTime();
+        $this->statut = StatutReclammation::EN_ATTENTE;
         $this->reponseReclamations = new ArrayCollection();
     }
 
@@ -55,7 +52,6 @@ class Reclammation
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -67,7 +63,6 @@ class Reclammation
     public function setDateCreation(\DateTimeInterface $date_creation): static
     {
         $this->date_creation = $date_creation;
-
         return $this;
     }
 
@@ -76,40 +71,14 @@ class Reclammation
         return $this->statut;
     }
 
+    public function getStatutAsString(): string
+    {
+        return $this->statut->value;
+    }
+
     public function setStatut(StatutReclammation $statut): static
     {
         $this->statut = $statut;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, ReponseReclamation>
-     */
-    public function getReponseReclamations(): Collection
-    {
-        return $this->reponseReclamations;
-    }
-
-    public function addReponseReclamation(ReponseReclamation $reponseReclamation): static
-    {
-        if (!$this->reponseReclamations->contains($reponseReclamation)) {
-            $this->reponseReclamations->add($reponseReclamation);
-            $reponseReclamation->setReclamation($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReponseReclamation(ReponseReclamation $reponseReclamation): static
-    {
-        if ($this->reponseReclamations->removeElement($reponseReclamation)) {
-            // set the owning side to null (unless already changed)
-            if ($reponseReclamation->getReclamation() === $this) {
-                $reponseReclamation->setReclamation(null);
-            }
-        }
-
         return $this;
     }
 
@@ -121,7 +90,11 @@ class Reclammation
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
-
         return $this;
+    }
+
+    public function getReponseReclamations(): Collection
+    {
+        return $this->reponseReclamations;
     }
 }
