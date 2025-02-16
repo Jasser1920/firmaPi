@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\Role;
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -36,6 +38,45 @@ class Utilisateur
 
     #[ORM\Column(type: 'string', enumType: Role::class)]
     private Role $role;
+
+    /**
+     * @var Collection<int, Don>
+     */
+    #[ORM\OneToMany(targetEntity: Don::class, mappedBy: 'dons_user')]
+    private Collection $dons;
+
+    /**
+     * @var Collection<int, Evenemment>
+     */
+    #[ORM\OneToMany(targetEntity: Evenemment::class, mappedBy: 'utilisateur')]
+    private Collection $evenement;
+
+    /**
+     * @var Collection<int, Reclammation>
+     */
+    #[ORM\OneToMany(targetEntity: Reclammation::class, mappedBy: 'utilisateur')]
+    private Collection $reclamation;
+
+    /**
+     * @var Collection<int, Terrain>
+     */
+    #[ORM\OneToMany(targetEntity: Terrain::class, mappedBy: 'utilisateur')]
+    private Collection $terrain;
+
+    /**
+     * @var Collection<int, Produit>
+     */
+    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'utilisateur')]
+    private Collection $produit;
+
+    public function __construct()
+    {
+        $this->dons = new ArrayCollection();
+        $this->evenement = new ArrayCollection();
+        $this->reclamation = new ArrayCollection();
+        $this->terrain = new ArrayCollection();
+        $this->produit = new ArrayCollection();
+    }
 
     // Getters and Setters
 
@@ -136,5 +177,155 @@ class Utilisateur
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+    /**
+     * @return Collection<int, Don>
+     */
+    public function getDons(): Collection
+    {
+        return $this->dons;
+    }
+
+    public function addDon(Don $don): static
+    {
+        if (!$this->dons->contains($don)) {
+            $this->dons->add($don);
+            $don->setDonsUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDon(Don $don): static
+    {
+        if ($this->dons->removeElement($don)) {
+            // set the owning side to null (unless already changed)
+            if ($don->getDonsUser() === $this) {
+                $don->setDonsUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Evenemment>
+     */
+    public function getEvenement(): Collection
+    {
+        return $this->evenement;
+    }
+
+    public function addEvenement(Evenemment $evenement): static
+    {
+        if (!$this->evenement->contains($evenement)) {
+            $this->evenement->add($evenement);
+            $evenement->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvenement(Evenemment $evenement): static
+    {
+        if ($this->evenement->removeElement($evenement)) {
+            // set the owning side to null (unless already changed)
+            if ($evenement->getUtilisateur() === $this) {
+                $evenement->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reclammation>
+     */
+    public function getReclamation(): Collection
+    {
+        return $this->reclamation;
+    }
+
+    public function addReclamation(Reclammation $reclamation): static
+    {
+        if (!$this->reclamation->contains($reclamation)) {
+            $this->reclamation->add($reclamation);
+            $reclamation->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReclamation(Reclammation $reclamation): static
+    {
+        if ($this->reclamation->removeElement($reclamation)) {
+            // set the owning side to null (unless already changed)
+            if ($reclamation->getUtilisateur() === $this) {
+                $reclamation->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Terrain>
+     */
+    public function getTerrain(): Collection
+    {
+        return $this->terrain;
+    }
+
+    public function addTerrain(Terrain $terrain): static
+    {
+        if (!$this->terrain->contains($terrain)) {
+            $this->terrain->add($terrain);
+            $terrain->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTerrain(Terrain $terrain): static
+    {
+        if ($this->terrain->removeElement($terrain)) {
+            // set the owning side to null (unless already changed)
+            if ($terrain->getUtilisateur() === $this) {
+                $terrain->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Produit>
+     */
+    public function getProduit(): Collection
+    {
+        return $this->produit;
+    }
+
+    public function addProduit(Produit $produit): static
+    {
+        if (!$this->produit->contains($produit)) {
+            $this->produit->add($produit);
+            $produit->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduit(Produit $produit): static
+    {
+        if ($this->produit->removeElement($produit)) {
+            // set the owning side to null (unless already changed)
+            if ($produit->getUtilisateur() === $this) {
+                $produit->setUtilisateur(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -32,6 +32,12 @@ class Produit
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_expiration = null;
 
+    #[ORM\ManyToOne(inversedBy: 'produits')]
+    private ?Categorie $categorie = null;
+
+    #[ORM\ManyToOne(inversedBy: 'produit')]
+    private ?Utilisateur $utilisateur = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +111,30 @@ class Produit
     public function setDateExpiration(\DateTimeInterface $date_expiration): static
     {
         $this->date_expiration = $date_expiration;
+
+        return $this;
+    }
+
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?Categorie $categorie): static
+    {
+        $this->categorie = $categorie;
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): static
+    {
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }

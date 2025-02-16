@@ -23,6 +23,12 @@ class Don
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    #[ORM\ManyToOne(inversedBy: 'dons')]
+    private ?Evenemment $evenement = null;
+
+    #[ORM\ManyToOne(inversedBy: 'dons')]
+    private ?Utilisateur $dons_user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +66,30 @@ class Don
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getEvenement(): ?Evenemment
+    {
+        return $this->evenement;
+    }
+
+    public function setEvenement(?Evenemment $evenement): static
+    {
+        $this->evenement = $evenement;
+
+        return $this;
+    }
+
+    public function getDonsUser(): ?Utilisateur
+    {
+        return $this->dons_user;
+    }
+
+    public function setDonsUser(?Utilisateur $dons_user): static
+    {
+        $this->dons_user = $dons_user;
 
         return $this;
     }

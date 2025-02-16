@@ -26,6 +26,9 @@ class Location
     #[ORM\Column(length: 255)]
     private ?string $mode_paiement = null;
 
+    #[ORM\ManyToOne(inversedBy: 'Location')]
+    private ?Terrain $terrain = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class Location
     public function setModePaiement(string $mode_paiement): static
     {
         $this->mode_paiement = $mode_paiement;
+
+        return $this;
+    }
+
+    public function getTerrain(): ?Terrain
+    {
+        return $this->terrain;
+    }
+
+    public function setTerrain(?Terrain $terrain): static
+    {
+        $this->terrain = $terrain;
 
         return $this;
     }

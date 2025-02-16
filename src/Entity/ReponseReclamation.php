@@ -20,6 +20,9 @@ class ReponseReclamation
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date_reponse = null;
 
+    #[ORM\ManyToOne(inversedBy: 'reponseReclamations')]
+    private ?Reclammation $reclamation = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +48,18 @@ class ReponseReclamation
     public function setDateReponse(\DateTimeInterface $date_reponse): static
     {
         $this->date_reponse = $date_reponse;
+
+        return $this;
+    }
+
+    public function getReclamation(): ?Reclammation
+    {
+        return $this->reclamation;
+    }
+
+    public function setReclamation(?Reclammation $reclamation): static
+    {
+        $this->reclamation = $reclamation;
 
         return $this;
     }

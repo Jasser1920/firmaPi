@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TerrainRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,6 +33,20 @@ class Terrain
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_creation = null;
+
+    #[ORM\ManyToOne(inversedBy: 'terrain')]
+    private ?Utilisateur $utilisateur = null;
+
+    /**
+     * @var Collection<int, Location>
+     */
+    #[ORM\OneToMany(targetEntity: Location::class, mappedBy: 'terrain')]
+    private Collection $Location;
+
+    public function __construct()
+    {
+        $this->Location = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,6 +121,48 @@ class Terrain
     public function setDateCreation(\DateTimeInterface $date_creation): static
     {
         $this->date_creation = $date_creation;
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): static
+    {
+        $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Location>
+     */
+    public function getLocation(): Collection
+    {
+        return $this->Location;
+    }
+
+    public function addLocation(Location $location): static
+    {
+        if (!$this->Location->contains($location)) {
+            $this->Location->add($location);
+            $location->setTerrain($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLocation(Location $location): static
+    {
+        if ($this->Location->removeElement($location)) {
+            // set the owning side to null (unless already changed)
+            if ($location->getTerrain() === $this) {
+                $location->setTerrain(null);
+            }
+        }
 
         return $this;
     }

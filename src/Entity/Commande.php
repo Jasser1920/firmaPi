@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\StatutCommande;
 use App\Repository\CommandeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -24,10 +26,20 @@ class Commande
     #[ORM\Column(type: 'string', enumType: StatutCommande::class)]
     private StatutCommande $statut;
 
+    /**
+     * @var Collection<int, Produit>
+     */
+    #[ORM\ManyToMany(targetEntity: Produit::class)]
+    private Collection $produits;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Livraison $livraison = null;
+
     public function __construct()
     {
         $this->date_commande = new \DateTime(); // Set the order date automatically
         $this->statut = StatutCommande::EN_ATTENTE; // Default status
+        $this->produits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -67,6 +79,42 @@ class Commande
     public function setStatut(StatutCommande $statut): static
     {
         $this->statut = $statut;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Produit>
+     */
+    public function getProduits(): Collection
+    {
+        return $this->produits;
+    }
+
+    public function addProduit(Produit $produit): static
+    {
+        if (!$this->produits->contains($produit)) {
+            $this->produits->add($produit);
+        }
+
+        return $this;
+    }
+
+    public function removeProduit(Produit $produit): static
+    {
+        $this->produits->removeElement($produit);
+
+        return $this;
+    }
+
+    public function getLivraison(): ?Livraison
+    {
+        return $this->livraison;
+    }
+
+    public function setLivraison(?Livraison $livraison): static
+    {
+        $this->livraison = $livraison;
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EvenemmentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +27,20 @@ class Evenemment
 
     #[ORM\Column(length: 255)]
     private ?string $lieux = null;
+
+    /**
+     * @var Collection<int, Don>
+     */
+    #[ORM\OneToMany(targetEntity: Don::class, mappedBy: 'evenement')]
+    private Collection $dons;
+
+    #[ORM\ManyToOne(inversedBy: 'evenement')]
+    private ?Utilisateur $utilisateur = null;
+
+    public function __construct()
+    {
+        $this->dons = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -75,6 +91,48 @@ class Evenemment
     public function setLieux(string $lieux): static
     {
         $this->lieux = $lieux;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Don>
+     */
+    public function getDons(): Collection
+    {
+        return $this->dons;
+    }
+
+    public function addDon(Don $don): static
+    {
+        if (!$this->dons->contains($don)) {
+            $this->dons->add($don);
+            $don->setEvenement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDon(Don $don): static
+    {
+        if ($this->dons->removeElement($don)) {
+            // set the owning side to null (unless already changed)
+            if ($don->getEvenement() === $this) {
+                $don->setEvenement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): static
+    {
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }
