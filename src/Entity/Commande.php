@@ -75,13 +75,32 @@ class Commande
     {
         return $this->statut;
     }
-
-    public function setStatut(StatutCommande $statut): static
+    public function getStatutAsString(): string
     {
-        $this->statut = $statut;
+        return $this->statut->value;
+    }
 
+    // public function setStatut(StatutCommande $statut): static
+    // {
+    //     $this->statut = $statut;
+
+    //     return $this;
+    // }
+    public function setStatut($statut): static
+    {
+        // Si le statut est une chaîne, convertissez-le en une instance de l'énumération
+        if (is_string($statut)) {
+            $statut = StatutCommande::from($statut);  // Convertir la chaîne en une instance d'énumération
+        } elseif (!$statut instanceof StatutCommande) {
+            throw new \InvalidArgumentException('Statut invalide.');
+        }
+    
+        $this->statut = $statut;
+    
         return $this;
     }
+    
+
 
     /**
      * @return Collection<int, Produit>
