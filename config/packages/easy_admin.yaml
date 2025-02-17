@@ -1,0 +1,6 @@
+# config/packages/easy_admin.yaml
+easy_admin:
+    site_name: 'FirmaPi'
+    # Add your CRUD entities here (if any)
+    entities:
+        - App\Entity\Utilisateur

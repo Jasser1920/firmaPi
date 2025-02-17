@@ -7,11 +7,13 @@ use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur 
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,7 +32,7 @@ class Utilisateur
     #[ORM\Column(length: 255)]
     private ?string $motdepasse = null;
 
-    #[ORM\Column(length: 20)] // Changed to string for better phone number handling
+    #[ORM\Column(length: 20)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
@@ -38,6 +40,7 @@ class Utilisateur
 
     #[ORM\Column(type: 'string', enumType: Role::class)]
     private Role $role;
+    
 
     /**
      * @var Collection<int, Don>
@@ -78,7 +81,7 @@ class Utilisateur
         $this->produit = new ArrayCollection();
     }
 
-    // Getters and Setters
+    // Getters and Setters (unchanged)
 
     public function getId(): ?int
     {
@@ -162,11 +165,12 @@ class Utilisateur
         return $this;
     }
 
-    // Implement UserInterface methods
+    // Implement UserInterface and PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return [$this->role->value];
+        // Return the role as an array
+        return ['ROLE_' . $this->role->value];
     }
 
     public function eraseCredentials(): void
@@ -176,8 +180,17 @@ class Utilisateur
 
     public function getUserIdentifier(): string
     {
+        // Use the email as the unique identifier
         return $this->email;
     }
+
+    public function getPassword(): string
+    {
+        // Return the password (motdepasse)
+        return $this->motdepasse;
+    }
+
+    // Other methods (unchanged)
 
     /**
      * @return Collection<int, Don>
