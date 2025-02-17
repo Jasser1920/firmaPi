@@ -11,15 +11,20 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Enum\StatutCommande; // Assure-toi que cette classe existe bien
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+
 
 class CommandeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('date_commande', null, [
-                'widget' => 'single_text',
-            ])
+        ->add('date_commande', DateTimeType::class, [
+            'widget' => 'single_text',  // Utilisez un seul champ texte
+        'html5' => false,  // Désactive l'option html5
+        'format' => 'yyyy-MM-dd', 
+        ])
+        
             ->add('total')
             ->add('statut', ChoiceType::class, [
                 'choices' => [
