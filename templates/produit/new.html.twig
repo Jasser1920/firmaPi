@@ -3,9 +3,15 @@
 {% block title %}New Produit{% endblock %}
 
 {% block body %}
-    <h1>Create new Produit</h1>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Create new Produit</h2>
 
-    {{ include('produit/_form.html.twig') }}
+            <!-- Include the form from _form.html.twig -->
+            {{ include('produit/_form.html.twig') }}
 
-    <a href="{{ path('app_produit_index') }}">back to list</a>
+            <!-- Link to product list -->
+            <a href="{{ path('app_produit_index') }}" class="back-link">Back to list</a>
+        </div>
+    </div>
 {% endblock %}

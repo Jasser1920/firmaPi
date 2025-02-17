@@ -3,6 +3,8 @@
 {% block title %}Liste des Produits{% endblock %}
 
 {% block body %}
+<div class="login-container">
+        <div class="login-box-produit" >
     <h1>Liste des Produits</h1>
 
     <table class="table">
@@ -45,4 +47,6 @@
     </table>
 
     <a href="{{ path('app_produit_new') }}" class="btn btn-success">Créer un nouveau produit</a>
+    </div>
+    </div>
 {% endblock %}

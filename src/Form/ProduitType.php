@@ -28,11 +28,6 @@ class ProduitType extends AbstractType
                 'choice_label' => 'nomCategorie', // Affiche le nom de la catégorie
                 'placeholder' => 'Sélectionnez une catégorie',
             ])
-            
-            ->add('utilisateur', EntityType::class, [
-                'class' => Utilisateur::class,
-                'choice_label' => 'id',
-            ])
         ;
     }
 

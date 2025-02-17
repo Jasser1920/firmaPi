@@ -1,4 +1,8 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    <div class="form-group">
+        {{ form_label(form.nom_categorie) }}
+        {{ form_widget(form.nom_categorie, {'attr': {'class': 'form-control', 'placeholder': 'Enter category name'}}) }}
+    </div>
+
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
