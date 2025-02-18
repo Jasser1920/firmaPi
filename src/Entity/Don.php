@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\DonRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DonRepository::class)]
 class Don
@@ -18,8 +19,17 @@ class Don
     private ?string $donateur = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(
+        min: 50,
+        max: 500,
+        minMessage: "La description doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "La description ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $description = null;
-
+    public function __construct()
+{
+    $this->date = new \DateTime(); // Initialise avec la date du jour
+}
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 

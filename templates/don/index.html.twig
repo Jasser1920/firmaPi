@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Don index{% endblock %}
+
+{% block body %}
+<div class="login-container">
+<div class="logo-box">
+    <h1>Liste des dons</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Donateur</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for don in dons %}
+            <tr>
+                <td>{{ don.id }}</td>
+                <td>{{ don.donateur }}</td>
+                <td>{{ don.description }}</td>
+                <td>{{ don.date ? don.date|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_don_show', {'id': don.id}) }}">Afficher</a>
+                    <a href="{{ path('app_don_edit', {'id': don.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_don_new') }}">Créer un don</a>
+    </div>
+    </div>
+{% endblock %}

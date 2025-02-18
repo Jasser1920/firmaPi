@@ -640,6 +640,7 @@ body {
 }
 /*** Footer End ***/
 
+<<<<<<< HEAD
 /* General styles */
 body {
     font-family: Arial, sans-serif;
@@ -733,3 +734,5 @@ body {
 .back-link:hover {
     text-decoration: underline;
 }
+=======
+>>>>>>> wissem

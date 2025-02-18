@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Evenemment index{% endblock %}
+
+{% block body %}
+<div class="login-container">
+<div class="logo-box">
+    <h1>Liste des évènements</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Lieu</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for evenemment in evenemments %}
+            <tr>
+                <td>{{ evenemment.id }}</td>
+                <td>{{ evenemment.titre }}</td>
+                <td>{{ evenemment.desecription }}</td>
+                <td>{{ evenemment.date ? evenemment.date|date('Y-m-d') : '' }}</td>
+                <td>{{ evenemment.lieux }}</td>
+                <td>
+                    <a href="{{ path('app_evenemment_show', {'id': evenemment.id}) }}">Afficher</a>
+                    <a href="{{ path('app_evenemment_edit', {'id': evenemment.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_evenemment_new') }}">Ajouter un évènement</a>
+    </div>
+    </div>
+{% endblock %}

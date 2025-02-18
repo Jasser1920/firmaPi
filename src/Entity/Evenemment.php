@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EvenemmentRepository::class)]
 class Evenemment
@@ -20,10 +21,26 @@ class Evenemment
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(
+        min: 50,
+        max: 500,
+        minMessage: "La description doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "La description ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $desecription = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\GreaterThanOrEqual(
+        value: "today",
+        message: "La date ne peut pas être dans le passé."
+    )]
     private ?\DateTimeInterface $date = null;
+    public function __construct()
+{
+    $this->date = new \DateTime(); // Initialise avec la date du jour
+    $this->dons = new ArrayCollection();
+}
+
 
     #[ORM\Column(length: 255)]
     private ?string $lieux = null;
@@ -36,11 +53,6 @@ class Evenemment
 
     #[ORM\ManyToOne(inversedBy: 'evenement')]
     private ?Utilisateur $utilisateur = null;
-
-    public function __construct()
-    {
-        $this->dons = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {

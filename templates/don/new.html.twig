@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Don{% endblock %}
+
+{% block body %}
+<div class="login-container">
+<div class="logo-box">
+    <h1>Créer un don</h1>
+
+    {{ include('don/_form.html.twig') }}
+
+    <a href="{{ path('app_don_index') }}">Retour</a>
+    </div>
+    </div>
+{% endblock %}
