@@ -22,11 +22,7 @@ class DonType extends AbstractType
             ])
             ->add('evenement', EntityType::class, [
                 'class' => Evenemment::class,
-                'choice_label' => 'id',
-            ])
-            ->add('dons_user', EntityType::class, [
-                'class' => Utilisateur::class,
-                'choice_label' => 'id',
+                'choice_label' => 'titre',
             ])
         ;
     }

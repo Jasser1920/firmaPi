@@ -19,9 +19,9 @@ class Commande
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: "La date de commande ne peut pas être vide.")]
-    #[Assert\DateTime(message: "La date de commande doit être une date valide.")]
+    #[Assert\Date(message: "La date de commande doit être une date valide.")]
     private ?\DateTimeInterface $date_commande = null;
 
     #[ORM\Column]
@@ -30,10 +30,14 @@ class Commande
     #[Assert\Positive(message: "Le total doit être un nombre positif.")]
     private ?float $total = null;
 
-    #[ORM\Column(type: 'string', enumType: StatutCommande::class)]
+    // #[ORM\Column(type: 'string', enumType: StatutCommande::class)]
+    #[ORM\Column(type: 'string')]
+
     #[Assert\NotBlank(message: "Le statut de la commande est obligatoire.")]
 
     private StatutCommande $statut;
+   
+
 
     /**
      * @var Collection<int, Produit>
@@ -97,19 +101,33 @@ class Commande
 
     //     return $this;
     // }
+    // public function setStatut($statut): static
+    // {
+    //     // Si le statut est une chaîne, convertissez-le en une instance de l'énumération
+    //     if (is_string($statut)) {
+    //         $statut = StatutCommande::from($statut);  // Convertir la chaîne en une instance d'énumération
+    //     } elseif (!$statut instanceof StatutCommande) {
+    //         throw new \InvalidArgumentException('Statut invalide.');
+    //     }
+    
+    //     $this->statut = $statut;
+    
+    //     return $this;
+    // }
     public function setStatut($statut): static
-    {
-        // Si le statut est une chaîne, convertissez-le en une instance de l'énumération
-        if (is_string($statut)) {
-            $statut = StatutCommande::from($statut);  // Convertir la chaîne en une instance d'énumération
-        } elseif (!$statut instanceof StatutCommande) {
-            throw new \InvalidArgumentException('Statut invalide.');
-        }
-    
-        $this->statut = $statut;
-    
-        return $this;
+{
+    // Vérifie si la valeur est une chaîne
+    if (is_string($statut)) {
+        $statut = StatutCommande::from($statut);  // Convertit la chaîne en instance de l'énumération
+    } elseif (!$statut instanceof StatutCommande) {
+        throw new \InvalidArgumentException('Statut invalide.');
     }
+
+    $this->statut = $statut;
+
+    return $this;
+}
+
     
 
 

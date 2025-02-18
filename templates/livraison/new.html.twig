@@ -3,9 +3,13 @@
 {% block title %}New Livraison{% endblock %}
 
 {% block body %}
+<div class="login-container">
+        <div class="login-box-produit-add" >
     <h1>Create new Livraison</h1>
 
     {{ include('livraison/_form.html.twig') }}
 
     <a href="{{ path('app_livraison_index') }}">back to list</a>
+    </div>
+    </div>
 {% endblock %}

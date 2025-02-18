@@ -22,7 +22,7 @@ class EvenemmentType extends AbstractType
             ->add('lieux')
             ->add('utilisateur', EntityType::class, [
                 'class' => Utilisateur::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
             ])
         ;
     }
