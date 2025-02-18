@@ -1,0 +1,88 @@
+{% block body %}
+    <div class="container mt-4">
+  
+
+        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
+
+        <div class="form-group">
+            {{ form_label(form.titre) }}
+            {{ form_widget(form.titre, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Enter event title'
+                }
+            }) }}
+            {% if form.titre.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.titre) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.desecription) }}
+            {{ form_widget(form.desecription, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Enter event description',
+                    'rows': 4
+                }
+            }) }}
+            {% if form.desecription.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.desecription) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.date) }}
+            {{ form_widget(form.date, {
+                'attr': {
+                    'class': 'form-control',
+                    'type': 'date'
+                }
+            }) }}
+            {% if form.date.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.date) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.lieux) }}
+            {{ form_widget(form.lieux, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Enter event location'
+                }
+            }) }}
+            {% if form.lieux.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.lieux) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.utilisateur) }}
+            {{ form_widget(form.utilisateur, {
+                'attr': {
+                    'class': 'form-control'
+                }
+            }) }}
+            {% if form.utilisateur.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.utilisateur) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">
+            {{ button_label|default('Save') }}
+        </button>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
