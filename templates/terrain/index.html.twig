@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Terrain index{% endblock %}
+
+{% block body %}
+    <h1>Terrain index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Description</th>
+                <th>Superficie</th>
+                <th>Localisation</th>
+                <th>Prix_location</th>
+                <th>Disponibilite</th>
+                <th>Date_creation</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for terrain in terrains %}
+            <tr>
+                <td>{{ terrain.id }}</td>
+                <td>{{ terrain.description }}</td>
+                <td>{{ terrain.superficie }}</td>
+                <td>{{ terrain.localisation }}</td>
+                <td>{{ terrain.prixLocation }}</td>
+                <td>{{ terrain.disponibilite ? 'Yes' : 'No' }}</td>
+                <td>{{ terrain.dateCreation ? terrain.dateCreation|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_terrain_show', {'id': terrain.id}) }}">show</a>
+                    <a href="{{ path('app_terrain_edit', {'id': terrain.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_terrain_new') }}">Create new</a>
+{% endblock %}

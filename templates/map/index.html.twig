@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Choisir la Localisation{% endblock %}
+
+{% block body %}
+    <h1>Choisir la Localisation du Terrain</h1>
+
+    <div id="map" style="height: 400px;"></div>
+    <br>
+    <form id="location-form" method="POST" action="{{ path('save_location') }}">
+        <input type="hidden" id="latitude" name="latitude">
+        <input type="hidden" id="longitude" name="longitude">
+        <button type="submit" class="btn btn-primary">Valider la Localisation</button>
+    </form>
+
+    <script>
+        var map = L.map('map').setView([34.0, 9.0], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var marker;
+
+        map.on('click', function(e) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+            document.getElementById('latitude').value = e.latlng.lat;
+            document.getElementById('longitude').value = e.latlng.lng;
+        });
+
+        document.getElementById("location-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            fetch("{{ path('save_location') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    latitude: document.getElementById("latitude").value,
+                    longitude: document.getElementById("longitude").value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("Localisation enregistrée : " + data.latitude + ", " + data.longitude);
+                window.location.href = "/terrain/new"; // Redirection vers le formulaire de terrain
+            });
+        });
+    </script>
+{% endblock %}

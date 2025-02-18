@@ -29,68 +29,20 @@ class Location
     #[ORM\ManyToOne(inversedBy: 'Location')]
     private ?Terrain $terrain = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function getDateDebut(): ?\DateTimeInterface
-    {
-        return $this->date_debut;
-    }
+    public function getDateDebut(): ?\DateTimeInterface { return $this->date_debut; }
+    public function setDateDebut(\DateTimeInterface $date_debut): static { $this->date_debut = $date_debut; return $this; }
 
-    public function setDateDebut(\DateTimeInterface $date_debut): static
-    {
-        $this->date_debut = $date_debut;
+    public function getDateFin(): ?\DateTimeInterface { return $this->date_fin; }
+    public function setDateFin(\DateTimeInterface $date_fin): static { $this->date_fin = $date_fin; return $this; }
 
-        return $this;
-    }
+    public function getPrixTotal(): ?float { return $this->prix_total; }
+    public function setPrixTotal(float $prix_total): static { $this->prix_total = $prix_total; return $this; }
 
-    public function getDateFin(): ?\DateTimeInterface
-    {
-        return $this->date_fin;
-    }
+    public function getModePaiement(): ?string { return $this->mode_paiement; }
+    public function setModePaiement(string $mode_paiement): static { $this->mode_paiement = $mode_paiement; return $this; }
 
-    public function setDateFin(\DateTimeInterface $date_fin): static
-    {
-        $this->date_fin = $date_fin;
-
-        return $this;
-    }
-
-    public function getPrixTotal(): ?float
-    {
-        return $this->prix_total;
-    }
-
-    public function setPrixTotal(float $prix_total): static
-    {
-        $this->prix_total = $prix_total;
-
-        return $this;
-    }
-
-    public function getModePaiement(): ?string
-    {
-        return $this->mode_paiement;
-    }
-
-    public function setModePaiement(string $mode_paiement): static
-    {
-        $this->mode_paiement = $mode_paiement;
-
-        return $this;
-    }
-
-    public function getTerrain(): ?Terrain
-    {
-        return $this->terrain;
-    }
-
-    public function setTerrain(?Terrain $terrain): static
-    {
-        $this->terrain = $terrain;
-
-        return $this;
-    }
+    public function getTerrain(): ?Terrain { return $this->terrain; }
+    public function setTerrain(?Terrain $terrain): static { $this->terrain = $terrain; return $this; }
 }
