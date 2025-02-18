@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReclammationRepository::class)]
 class Reclammation
@@ -18,6 +19,12 @@ class Reclammation
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(
+        min: 10,
+        minMessage: "La description doit contenir au moins 10 caractères.",
+        max: 2000,
+        maxMessage: "La description ne doit pas dépasser 2000 caractères."
+    )]    
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

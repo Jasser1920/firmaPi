@@ -1,7 +1,11 @@
 {{ form_start(form) }}
+
+    {# Affichage global des erreurs du formulaire #}
+    {{ form_errors(form) }}
+
     <div class="form-group">
         {{ form_label(form.description) }}
-        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Enter description'}}) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Décrivez votre réclamation (min. 10 caractères)' }}) }}
         {{ form_errors(form.description) }}
     </div>
 
@@ -24,4 +28,5 @@
     </div>
 
     <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+
 {{ form_end(form) }}

@@ -10,13 +10,16 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ReclammationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('description')
+            ->add('description', TextareaType::class, [
+                'attr' => ['class' => 'form-control', 'placeholder' => 'Décrivez votre réclamation'],
+            ])
             ->add('date_creation', null, [
                 'widget' => 'single_text',
             ])
@@ -31,6 +34,7 @@ class ReclammationType extends AbstractType
                 'choice_label' => 'id',
             ]);
     }
+
 
     public function configureOptions(OptionsResolver $resolver): void
     {
