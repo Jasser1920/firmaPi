@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produit{% endblock %}
+
+{% block body %}
+    <h1>Détails du Produit</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>ID</th>
+                <td>{{ produit.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ produit.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prix</th>
+                <td>{{ produit.prix }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ produit.description }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>
+                    {% if produit.image %}
+                        <img src="{{ asset('uploads/images/' ~ produit.image) }}" alt="{{ produit.nom }}" width="100">
+                    {% else %}
+                        Aucune image disponible
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Quantité</th>
+                <td>{{ produit.quantite }}</td>
+            </tr>
+            <tr>
+                <th>Date d'expiration</th>
+                <td>{{ produit.dateExpiration ? produit.dateExpiration|date('Y-m-d') : 'Non définie' }}</td>
+            </tr>
+            <tr>
+                <th>Catégorie</th>
+                <td>{{ produit.categorie ? produit.categorie.nomCategorie : 'Aucune' }}</td>
+
+
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_produit_index') }}" class="btn btn-secondary">Retour à la liste</a>
+    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning">Modifier</a>
+
+    {{ include('produit/_delete_form.html.twig') }}
+{% endblock %}

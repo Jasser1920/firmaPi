@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ReponseReclamation index{% endblock %}
+
+{% block body %}
+<div class="login-container">
+        <div class="login-box-produit" >
+    <h1>ReponseReclamation index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Message</th>
+                <th>Date_reponse</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for reponse_reclamation in reponse_reclamations %}
+            <tr>
+                <td>{{ reponse_reclamation.id }}</td>
+                <td>{{ reponse_reclamation.message }}</td>
+                <td>{{ reponse_reclamation.dateReponse ? reponse_reclamation.dateReponse|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_reponse_reclamation_show', {'id': reponse_reclamation.id}) }}">show</a>
+                    <a href="{{ path('app_reponse_reclamation_edit', {'id': reponse_reclamation.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_reponse_reclamation_new') }}">Create new</a>
+    </div>
+    </div>
+{% endblock %}

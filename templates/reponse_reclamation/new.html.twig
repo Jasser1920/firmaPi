@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New ReponseReclamation{% endblock %}
+
+{% block body %}
+<div class="login-container">
+        <div class="login-box-produit" >
+    <h1>Create new ReponseReclamation</h1>
+
+    {{ include('reponse_reclamation/_form.html.twig') }}
+
+    <a href="{{ path('app_reponse_reclamation_index') }}">back to list</a>
+    </div>
+    </div>
+{% endblock %}

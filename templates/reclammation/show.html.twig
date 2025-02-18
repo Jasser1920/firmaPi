@@ -1,0 +1,18 @@
+<table>
+    <tr>
+        <th>ID</th>
+        <td>{{ reclammation.id }}</td>  
+    </tr>
+    <tr>
+        <th>Description</th>
+        <td>{{ reclammation.description }}</td>  
+    </tr>
+    <tr>
+        <th>Date de Création</th>
+        <td>{{ reclammation.dateCreation|date('Y-m-d H:i') }}</td>  
+    </tr>
+    <tr>
+        <th>Statut</th>
+        <td>{{ reclammation.statut.label() }}</td> 
+    </tr>
+</table>

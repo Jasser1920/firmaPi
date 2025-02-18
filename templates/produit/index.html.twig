@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Produits{% endblock %}
+
+{% block body %}
+<div class="login-container">
+        <div class="login-box-produit" >
+    <h1>Liste des Produits</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prix</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Quantité</th>
+                <th>Date d'expiration</th>
+                <th>Catégorie</th> {# Ajout de la colonne Catégorie #}
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for produit in produits %}
+            <tr>
+                <td>{{ produit.id }}</td>
+                <td>{{ produit.nom }}</td>
+                <td>{{ produit.prix }}</td>
+                <td>{{ produit.description }}</td>
+                <td><img src="{{ asset('uploads/images/' ~ produit.image) }}" alt="{{ produit.nom }}" width="50"></td> {# Ajout de l'affichage de l'image #}
+                <td>{{ produit.quantite }}</td>
+                <td>{{ produit.dateExpiration ? produit.dateExpiration|date('Y-m-d') : 'Non définie' }}</td>
+                <td>{{ produit.categorie ? produit.categorie.nomCategorie : 'Aucune' }}</td>
+
+                <td>
+                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9" class="text-center">Aucun produit trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_produit_new') }}" class="btn btn-success">Créer un nouveau produit</a>
+    </div>
+    </div>
+{% endblock %}

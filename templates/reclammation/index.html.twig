@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reclammation index{% endblock %}
+
+{% block body %}
+<div class="login-container">
+        <div class="login-box-produit" >
+    <h1>Reclammation index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Description</th>
+                <th>Date de création</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for reclammation in reclammations %}
+            <tr>
+                <td>{{ reclammation.id }}</td>
+                <td>{{ reclammation.description }}</td>
+                <td>{{ reclammation.dateCreation ? reclammation.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ reclammation.statut.label() }}</td>
+                <td>
+                    <a href="{{ path('app_reclammation_show', {'id': reclammation.id}) }}">Voir</a>
+                    <a href="{{ path('app_reclammation_edit', {'id': reclammation.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun enregistrement trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_reclammation_new') }}">Créer une nouvelle réclamation</a>
+    </div>
+    </div>
+{% endblock %}
