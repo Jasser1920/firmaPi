@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 class Commande
@@ -18,18 +20,27 @@ class Commande
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(message: "La date de commande ne peut pas être vide.")]
+    #[Assert\DateTime(message: "La date de commande doit être une date valide.")]
     private ?\DateTimeInterface $date_commande = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Le total ne peut pas être vide.")]
+    #[Assert\Type(type: "numeric", message: "Le total doit être un nombre.")]
+    #[Assert\Positive(message: "Le total doit être un nombre positif.")]
     private ?float $total = null;
 
     #[ORM\Column(type: 'string', enumType: StatutCommande::class)]
+    #[Assert\NotBlank(message: "Le statut de la commande est obligatoire.")]
+
     private StatutCommande $statut;
 
     /**
      * @var Collection<int, Produit>
      */
     #[ORM\ManyToMany(targetEntity: Produit::class)]
+    #[Assert\NotBlank(message: "La commande doit contenir au moins un produit.")]
+
     private Collection $produits;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
@@ -75,13 +86,32 @@ class Commande
     {
         return $this->statut;
     }
-
-    public function setStatut(StatutCommande $statut): static
+    public function getStatutAsString(): string
     {
-        $this->statut = $statut;
+        return $this->statut->value;
+    }
 
+    // public function setStatut(StatutCommande $statut): static
+    // {
+    //     $this->statut = $statut;
+
+    //     return $this;
+    // }
+    public function setStatut($statut): static
+    {
+        // Si le statut est une chaîne, convertissez-le en une instance de l'énumération
+        if (is_string($statut)) {
+            $statut = StatutCommande::from($statut);  // Convertir la chaîne en une instance d'énumération
+        } elseif (!$statut instanceof StatutCommande) {
+            throw new \InvalidArgumentException('Statut invalide.');
+        }
+    
+        $this->statut = $statut;
+    
         return $this;
     }
+    
+
 
     /**
      * @return Collection<int, Produit>

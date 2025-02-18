@@ -35,6 +35,7 @@
             "./migrations/.gitignore"
         ]
     },
+<<<<<<< HEAD
     "easycorp/easyadmin-bundle": {
         "version": "4.24",
         "recipe": {
@@ -44,6 +45,8 @@
             "ref": "b131e6cbfe1b898a508987851963fff485986285"
         }
     },
+=======
+>>>>>>> ghofrane
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {
@@ -267,6 +270,7 @@
             "./templates/base.html.twig"
         ]
     },
+<<<<<<< HEAD
     "symfony/uid": {
         "version": "6.4",
         "recipe": {
@@ -279,6 +283,8 @@
             "./config/packages/uid.yaml"
         ]
     },
+=======
+>>>>>>> ghofrane
     "symfony/ux-turbo": {
         "version": "2.22",
         "recipe": {
@@ -288,6 +294,7 @@
             "ref": "9dd2778a116b6e5e01e5e1582d03d5a9e82630de"
         }
     },
+<<<<<<< HEAD
     "symfony/ux-twig-component": {
         "version": "2.23",
         "recipe": {
@@ -300,6 +307,8 @@
             "./config/packages/twig_component.yaml"
         ]
     },
+=======
+>>>>>>> ghofrane
     "symfony/validator": {
         "version": "6.4",
         "recipe": {

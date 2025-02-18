@@ -6,6 +6,8 @@ use App\Enum\StatutLivraison;
 use App\Repository\LivraisonRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: LivraisonRepository::class)]
 class Livraison
@@ -16,9 +18,19 @@ class Livraison
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom de la société est obligatoire.")]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Le nom de la société ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $nom_societe = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "L'adresse de livraison est obligatoire.")]
+    #[Assert\Length(
+        max: 1000,
+        maxMessage: "L'adresse de livraison ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $adresse_livraison = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
