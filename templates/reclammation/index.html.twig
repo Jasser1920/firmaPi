@@ -61,7 +61,29 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        {{ reclammation.repliesSummary|raw }}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Réponse</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reponse_reclamation in reclammation.reponseReclamations %}
+                                    <tr>
+                                        <td>{{ reponse_reclamation.id }}</td>
+                                        <td>{{ reponse_reclamation.message }}</td>
+                                        <td>{{ reponse_reclamation.dateReponse ? reponse_reclamation.dateReponse|date('Y-m-d H:i:s') : '' }}</td>
+                                       
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4">Aucune réponse trouvée</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
