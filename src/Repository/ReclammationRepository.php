@@ -15,7 +15,16 @@ class ReclammationRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Reclammation::class);
     }
-
+    public function findWithReplies(int $id): ?Reclammation
+    {
+        return $this->createQueryBuilder('r')
+            ->leftJoin('r.reponseReclamations', 'rr')
+            ->addSelect('rr')
+            ->where('r.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
     //    /**
     //     * @return Reclammation[] Returns an array of Reclammation objects
     //     */

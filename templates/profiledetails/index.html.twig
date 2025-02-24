@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ app.user.prenom }} {{ app.user.nom }}'s Profile{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    {# Profile Header #}
+    <div class="profile-header text-center">
+        {% if app.user.profilePicture %}
+            <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}" alt="Profile Picture" class="profile-picture rounded-circle mb-3" style="width: 150px; height: 150px;">
+        {% else %}
+            <div class="rounded-circle bg-secondary mb-3 mx-auto" style="width: 150px; height: 150px; line-height: 150px; color: white;">
+                {{ app.user.prenom|first }}{{ app.user.nom|first }}
+            </div>
+        {% endif %}
+        <h1>{{ app.user.prenom }} {{ app.user.nom }}</h1>
+        <p class="text-muted">{{ app.user.role.value }}</p>
+    </div>
+
+    {# Main Content #}
+    <div class="card mt-3">
+        <div class="card-body">
+            {# Personal Information #}
+            <section class="info-section">
+                <h3 class="border-bottom pb-2">Personal Information</h3>
+                <dl class="row mb-0">
+                    {% block personal_info %}
+                        <dt class="col-sm-3">Email</dt>
+                        <dd class="col-sm-9">{{ app.user.email }}</dd>
+
+                        <dt class="col-sm-3">Phone</dt>
+                        <dd class="col-sm-9">{{ app.user.telephone }}</dd>
+
+                        <dt class="col-sm-3">Address</dt>
+                        <dd class="col-sm-9">{{ app.user.adresse }}</dd>
+
+                        <dt class="col-sm-3">Status</dt>
+                        <dd class="col-sm-9">
+                            {% if app.user.isBlocked %}
+                                <span class="badge bg-danger">Blocked</span>
+                            {% else %}
+                                <span class="badge bg-success">Active</span>
+                            {% endif %}
+                        </dd>
+                    {% endblock %}
+                </dl>
+            </section>
+
+            {# Activity Summary #}
+            <section class="info-section">
+                <h3 class="border-bottom pb-2">Activity Summary</h3>
+                <ul class="activity-list">
+                    {% block activity_summary %}
+                        <li><strong>Donations:</strong> {{ app.user.dons|length }}</li>
+                        <li><strong>Events:</strong> {{ app.user.evenement|length }}</li>
+                        <li><strong>Complaints:</strong> {{ app.user.reclamation|length }}</li>
+                        <li><strong>Terrains:</strong> {{ app.user.terrain|length }}</li>
+                        <li><strong>Products:</strong> {{ app.user.produit|length }}</li>
+                    {% endblock %}
+                </ul>
+            </section>
+
+            {# Action Buttons #}
+            <div class="text-end">
+                {% block actions %}
+                    <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">Edit Profile</a>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    {# Additional Custom Section #}
+    {% block extra_content %}
+        {# Placeholder for additional content #}
+    {% endblock %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {# Add custom JS if needed #}
+{% endblock %}

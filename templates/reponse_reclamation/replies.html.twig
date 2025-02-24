@@ -1,0 +1,16 @@
+{# templates/admin/reclamation/replies.html.twig #}
+<div>
+    <h4>Replies</h4>
+    {% if field.value is not empty %}
+        <ul>
+            {% for reply in field.value %}
+                <li>
+                    <strong>{{ reply.dateReponse|date('Y-m-d H:i:s') }}:</strong>
+                    {{ reply.message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No replies yet.</p>
+    {% endif %}
+</div>

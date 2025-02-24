@@ -17,19 +17,7 @@ class ReclammationType extends AbstractType
     {
         $builder
             ->add('description')
-            ->add('date_creation', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('statut', EnumType::class, [
-                'class' => StatutReclammation::class,
-                'choice_label' => fn (StatutReclammation $statut) => $statut->label(),
-                'placeholder' => 'Sélectionner un statut',
-                'required' => true,
-            ])
-            ->add('utilisateur', EntityType::class, [
-                'class' => Utilisateur::class,
-                'choice_label' => 'id',
-            ]);
+          ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

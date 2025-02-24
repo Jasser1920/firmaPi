@@ -219,7 +219,7 @@ body {
 }
 
 /*** Topbar Start ***/
-.fixed-top {
+.fixed-top {position: sticky;
     transition: 0.5s;
     background: var(--bs-white);
     border: 0;

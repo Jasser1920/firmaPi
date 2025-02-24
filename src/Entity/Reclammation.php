@@ -29,7 +29,8 @@ class Reclammation
     #[ORM\ManyToOne(inversedBy: 'reclamation')]
     private ?Utilisateur $utilisateur = null;
 
-    #[ORM\OneToMany(targetEntity: ReponseReclamation::class, mappedBy: 'reclamation')]
+
+    #[ORM\OneToMany(targetEntity: ReponseReclamation::class, mappedBy: 'reclamation', cascade: ['remove'])]
     private Collection $reponseReclamations;
 
     public function __construct()
@@ -97,4 +98,19 @@ class Reclammation
     {
         return $this->reponseReclamations;
     }
+    // In App\Entity\Reclammation
+public function getRepliesSummary(): string
+{
+    $replies = $this->getReponseReclamations();
+    if ($replies->isEmpty()) {
+        return 'No replies yet.';
+    }
+
+    $summary = [];
+    foreach ($replies as $reply) {
+        $summary[] = $reply->getMessage() . ' (' . $reply->getDateReponse()->format('Y-m-d H:i:s') . ')';
+    }
+
+    return implode('<br>', $summary);
+}
 }

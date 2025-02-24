@@ -1,0 +1,22 @@
+{# templates/admin/reply_reclamation.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reply to Reclamation</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+   <link href="{{ asset('css/reply_reclamation.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Reply to Reclamation</h1>
+        {{ form_start(form) }}
+            <div class="form-group">
+                {{ form_label(form.message) }}
+                {{ form_widget(form.message, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+            </div>
+            <button type="submit" class="btn ">Send Reply</button>
+        {{ form_end(form) }}
+    </div>
+</body>
+</html>

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Reclammation;
 use App\Entity\Utilisateur;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -9,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use App\Controller\Admin\UtilisateurCrudController;
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
@@ -44,9 +46,9 @@ class DashboardController extends AbstractDashboardController
     }
 
     public function configureMenuItems(): iterable
-    {
-        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+    {   yield MenuItem::linkToCrud('Reclamation', 'fa fa-exclamation-triangle', Reclammation::class);
         yield MenuItem::linkToCrud('User', 'fas fa-user', Utilisateur::class);
+     
         // Add a logout button to the user menu
    yield MenuItem::section('Account');
    yield MenuItem::linkToLogout('Logout', 'fa fa-sign-out');

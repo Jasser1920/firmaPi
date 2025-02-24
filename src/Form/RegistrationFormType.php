@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -46,6 +46,11 @@ class RegistrationFormType extends AbstractType
             ->add('adresse', TextType::class, [
                 'label' => 'Adresse',
                 'constraints' => [new Assert\NotBlank()],
+            ])
+            ->add('profilePicture', FileType::class, [
+                'label' => 'Profile Picture',
+                'mapped' => false,
+                'required' => false,
             ])
             ->add('role', ChoiceType::class, [
                 'label' => 'Role',

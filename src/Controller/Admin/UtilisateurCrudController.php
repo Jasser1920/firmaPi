@@ -14,6 +14,8 @@ use App\Enum\Role;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use Doctrine\ORM\EntityManagerInterface;
 class UtilisateurCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -21,13 +23,7 @@ class UtilisateurCrudController extends AbstractCrudController
         return Utilisateur::class;
     }
 
-    public function configureActions(Actions $actions): Actions
-    {
-        // Remove the delete action
-        return $actions
-            ->remove(Crud::PAGE_INDEX, Action::DELETE)
-            ->remove(Crud::PAGE_DETAIL, Action::DELETE);
-    }
+  
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -46,7 +42,29 @@ class UtilisateurCrudController extends AbstractCrudController
             TextField::new('prenom'),
             TextField::new('adresse'),
             TextField::new('telephone'),
+            BooleanField::new('blocked')->renderAsSwitch(false), // Show blocked status
         ];
+    }
+    public function configureActions(Actions $actions): Actions
+{
+    // Add block/unblock action
+    $blockAction = Action::new('blockUnblock', 'Block/Unblock', 'fa fa-ban')
+        ->linkToCrudAction('blockUnblockUser')
+        ->displayIf(fn(Utilisateur $user) => $user->isBlocked() ? 'Unblock' : 'Block');
+
+    return $actions
+       
+        ->add(Crud::PAGE_INDEX, $blockAction); // Add custom block/unblock action
+}
+    public function blockUnblockUser(AdminContext $context, EntityManagerInterface $entityManager)
+    {
+        $user = $context->getEntity()->getInstance();
+        $user->setBlocked(!$user->isBlocked()); // Toggle block status
+
+        $entityManager->flush(); // Save changes to the database
+
+        $this->addFlash('success', $user->isBlocked() ? 'User blocked' : 'User unblocked');
+        return $this->redirectToRoute('admin_dashboard');
     }
     
 }
