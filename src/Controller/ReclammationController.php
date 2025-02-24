@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Security;
 #[Route('/reclammation')]
 final class ReclammationController extends AbstractController
 {
-    private $security;
+    private $security; 
 
     public function __construct(Security $security)
     {

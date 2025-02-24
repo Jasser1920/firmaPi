@@ -1,41 +1,100 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ReponseReclamation index{% endblock %}
+{% block title %}Reclammation index{% endblock %}
 
 {% block body %}
 <div class="login-container">
-        <div class="login-box-produit" >
-    <h1>ReponseReclamation index</h1>
+    <div class="login-box-produit">
+        <h1>Reclammation index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Message</th>
-                <th>Date_reponse</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for reponse_reclamation in reponse_reclamations %}
-            <tr>
-                <td>{{ reponse_reclamation.id }}</td>
-                <td>{{ reponse_reclamation.message }}</td>
-                <td>{{ reponse_reclamation.dateReponse ? reponse_reclamation.dateReponse|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_reponse_reclamation_show', {'id': reponse_reclamation.id}) }}">show</a>
-                    <a href="{{ path('app_reponse_reclamation_edit', {'id': reponse_reclamation.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Description</th>
+                    <th>Date de création</th>
+                    <th>Statut</th>
+                    <th>Réponses</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for reclammation in reclammations %}
+                <tr>
+                    <td>{{ reclammation.id }}</td>
+                    <td>{{ reclammation.description }}</td>
+                    <td>{{ reclammation.dateCreation ? reclammation.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>{{ reclammation.statut.label() }}</td>
+                    <td>
+                        {% if reclammation.reponseReclamations|length > 0 %}
+                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#repliesModal{{ reclammation.id }}">
+                                Voir ({{ reclammation.reponseReclamations|length }})
+                            </button>
+                        {% else %}
+                            Aucune réponse
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_reclammation_show', {'id': reclammation.id}) }}">Voir</a>
+                        <a href="{{ path('app_reclammation_edit', {'id': reclammation.id}) }}">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">Aucun enregistrement trouvé</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-    <a href="{{ path('app_reponse_reclamation_new') }}">Create new</a>
+        <a href="{{ path('app_reclammation_new') }}">Créer une nouvelle réclamation</a>
     </div>
-    </div>
+</div>
+
+{% for reclammation in reclammations %}
+    {% if reclammation.reponseReclamations|length > 0 %}
+        <div class="modal fade" id="repliesModal{{ reclammation.id }}" tabindex="-1" aria-labelledby="repliesModalLabel{{ reclammation.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="repliesModalLabel{{ reclammation.id }}">Réponses à la réclamation #{{ reclammation.id }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Réponse</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reponse_reclamation in reclammation.reponseReclamations %}
+                                    <tr>
+                                        <td>{{ reponse_reclamation.id }}</td>
+                                        <td>{{ reponse_reclamation.message }}</td>
+                                        <td>{{ reponse_reclamation.dateReponse ? reponse_reclamation.dateReponse|date('Y-m-d H:i:s') : '' }}</td>
+                                        <td>
+                                            <a href="{{ path('app_reponse_reclamation_show', {'id': reponse_reclamation.id}) }}">show</a>
+                                            <a href="{{ path('app_reponse_reclamation_edit', {'id': reponse_reclamation.id}) }}">edit</a>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4">Aucune réponse trouvée</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
 {% endblock %}
