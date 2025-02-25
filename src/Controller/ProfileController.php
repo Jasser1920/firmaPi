@@ -9,52 +9,45 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Cloudinary\Cloudinary;
+
 class ProfileController extends AbstractController
 {
+    private $cloudinary;
+
+    public function __construct(Cloudinary $cloudinary)
+    {
+        $this->cloudinary = $cloudinary;
+    }
+
     #[Route('/profile/edit', name: 'app_profile_edit')]
     public function editProfile(
         Request $request,
-        EntityManagerInterface $entityManager,
-        SluggerInterface $slugger
+        EntityManagerInterface $entityManager
     ): Response {
-        // Get the current user
         $user = $this->getUser();
+        if (!$user instanceof Utilisateur) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour modifier votre profil.');
+        }
 
-        // Create the form
         $form = $this->createForm(ProfileEditType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handle profile picture upload
             $profilePictureFile = $form->get('profilePicture')->getData();
 
             if ($profilePictureFile) {
-                $originalFilename = pathinfo($profilePictureFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $profilePictureFile->guessExtension();
-
-                try {
-                    $profilePictureFile->move(
-                        $this->getParameter('profile_picture_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'There was an error uploading your profile picture.');
-                    return $this->redirectToRoute('app_profile_edit');
-                }
-
-                // Update the profile picture path in the user entity
-                $user->setProfilePicture($newFilename);
+                $uploadResult = $this->cloudinary->uploadApi()->upload($profilePictureFile->getPathname(), [
+                    'folder' => 'profile_pictures',
+                    'public_id' => 'user_' . $user->getId() . '_' . uniqid(),
+                ]);
+                $user->setProfilePicture($uploadResult['secure_url']);
             }
 
-            // Save the updated user entity
             $entityManager->persist($user);
             $entityManager->flush();
 
             $this->addFlash('success', 'Profile updated successfully!');
-
             return $this->redirectToRoute('app_profiledetails');
         }
 
