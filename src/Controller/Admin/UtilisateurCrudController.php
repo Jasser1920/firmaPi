@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Doctrine\ORM\EntityManagerInterface;
+
 class UtilisateurCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -23,7 +24,6 @@ class UtilisateurCrudController extends AbstractCrudController
         return Utilisateur::class;
     }
 
-  
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -31,31 +31,33 @@ class UtilisateurCrudController extends AbstractCrudController
             TextField::new('email'),
             TextField::new('motdepasse')->onlyOnForms(),
             ChoiceField::new('role')
-            ->setChoices([
-                'Admin' => Role::ADMIN,
-                'Agriculture' => Role::AGRICULTURE,
-                'Client' => Role::CLIENT,
-                'Association' => Role::ASSOCIATION,
-            ])
-            ->renderAsNativeWidget(),
+                ->setChoices([
+                    'Admin' => Role::ADMIN,
+                    'Agriculture' => Role::AGRICULTURE,
+                    'Client' => Role::CLIENT,
+                    'Association' => Role::ASSOCIATION,
+                ])
+                ->renderAsNativeWidget(),
             TextField::new('nom'),
             TextField::new('prenom'),
             TextField::new('adresse'),
             TextField::new('telephone'),
-            BooleanField::new('blocked')->renderAsSwitch(false), // Show blocked status
+            BooleanField::new('blocked')->renderAsSwitch(false),
         ];
     }
-    public function configureActions(Actions $actions): Actions
-{
-    // Add block/unblock action
-    $blockAction = Action::new('blockUnblock', 'Block/Unblock', 'fa fa-ban')
-        ->linkToCrudAction('blockUnblockUser')
-        ->displayIf(fn(Utilisateur $user) => $user->isBlocked() ? 'Unblock' : 'Block');
 
-    return $actions
-       
-        ->add(Crud::PAGE_INDEX, $blockAction); // Add custom block/unblock action
-}
+    public function configureActions(Actions $actions): Actions
+    {
+        // Add block/unblock action
+        $blockAction = Action::new('blockUnblock', 'Block/Unblock', 'fa fa-ban')
+            ->linkToCrudAction('blockUnblockUser')
+            ->displayIf(fn(Utilisateur $user) => $user->isBlocked() ? 'Unblock' : 'Block');
+
+        return $actions
+            ->add(Crud::PAGE_INDEX, $blockAction) // Add custom block/unblock action
+            ->disable(Action::DELETE); // Disable the delete action
+    }
+
     public function blockUnblockUser(AdminContext $context, EntityManagerInterface $entityManager)
     {
         $user = $context->getEntity()->getInstance();
@@ -66,5 +68,4 @@ class UtilisateurCrudController extends AbstractCrudController
         $this->addFlash('success', $user->isBlocked() ? 'User blocked' : 'User unblocked');
         return $this->redirectToRoute('admin_dashboard');
     }
-    
 }

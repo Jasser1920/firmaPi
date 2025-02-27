@@ -59,6 +59,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean')]
     private bool $blocked = false;
+
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isVerified = false;
+
+    #[ORM\Column(type: 'string', length: 6, nullable: true)]
+    private ?string $confirmationCode = null;
+
     /**
      * @var Collection<int, Don>
      */
@@ -99,7 +107,27 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     // Getters and Setters (unchanged)
-        
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+        return $this;
+    }
+
+    public function getConfirmationCode(): ?string
+    {
+        return $this->confirmationCode;
+    }
+
+    public function setConfirmationCode(?string $confirmationCode): self
+    {
+        $this->confirmationCode = $confirmationCode;
+        return $this;
+    }
     public function isBlocked(): bool
     {
         return $this->blocked;

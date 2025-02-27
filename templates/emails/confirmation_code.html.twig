@@ -1,0 +1,9 @@
+{% block subject %}Your Email Confirmation Code{% endblock %}
+
+{% block body %}
+    <h1>Email Confirmation</h1>
+    <p>Hello {{ user.prenom }},</p>
+    <p>Your confirmation code is: <strong>{{ code }}</strong></p>
+    <p>Enter this code in the application to verify your email address.</p>
+    <p>If you didn’t request this, please ignore this email.</p>
+{% endblock %}

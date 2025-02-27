@@ -213,7 +213,7 @@ class ReclammationCrudController extends AbstractCrudController
                 ];
                 return $colors[$value->value] ?? $value->label();
             }
-            return 'No role specified';
+            return 'No role specified'; 
         })
         ->setCustomOption('renderAsHtml', true)
         ->hideOnForm(),

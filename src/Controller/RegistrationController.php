@@ -14,6 +14,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 
 class RegistrationController extends AbstractController
 {
@@ -23,12 +25,13 @@ class RegistrationController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator,
-        SluggerInterface $slugger // Add SluggerInterface for generating safe filenames
+        SluggerInterface $slugger,
+        MailerInterface $mailer // Add MailerInterface for sending emails
     ): Response {
         $user = new Utilisateur();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
-
+        $request->getSession()->set('verify_email', $user->getEmail());
         if ($form->isSubmitted()) {
             $errors = $validator->validate($user);
 
@@ -64,13 +67,35 @@ class RegistrationController extends AbstractController
                     )
                 );
 
+                // Set the user as not verified
+                $user->setIsVerified(false);
+
+                // Generate a confirmation code
+                $confirmationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+                $user->setConfirmationCode($confirmationCode);
+
                 // Save the user to the database
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                $this->addFlash('success', 'Registration successful! You can now log in.');
+                // Send the confirmation email
+                $email = (new TemplatedEmail())
+                    ->from('firmaprojectpi@gmail.com')
+                    ->to($user->getEmail())
+                    ->subject('Your Email Confirmation Code')
+                    ->htmlTemplate('emails/confirmation_code.html.twig')
+                    ->context(['code' => $confirmationCode, 'user' => $user]);
 
-                return $this->redirectToRoute('app_login');
+                try {
+                    $mailer->send($email);
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Failed to send confirmation email. Please try again later.');
+                    return $this->redirectToRoute('app_register');
+                }
+
+                // Redirect to the verification page
+                $this->addFlash('success', 'A confirmation code has been sent to your email. Please verify your email to complete registration.');
+                return $this->redirectToRoute('app_verify_code');
             } else {
                 foreach ($errors as $error) {
                     $this->addFlash('error', $error->getMessage());

@@ -1,6 +1,9 @@
 twig:
     file_name_pattern: '*.twig'
-
+    # exception_templates:
+    #     '403': '@Twig/Exception/error403.html.twig'
+    #     '404': '@Twig/Exception/error404.html.twig'  # Optional, for consistency
+    #     '500': '@Twig/Exception/error500.html.twig'
 when@test:
     twig:
         strict_variables: true
