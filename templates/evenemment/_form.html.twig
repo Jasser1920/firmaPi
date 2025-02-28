@@ -1,14 +1,12 @@
 {% block body %}
     <div class="container mt-4">
-  
-
-        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
+        {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
 
         <div class="form-group">
             {{ form_label(form.titre) }}
             {{ form_widget(form.titre, {
                 'attr': {
-                    'class': 'form-control',
+                    'class': 'form-control' ~ (form.titre.vars.errors|length > 0 ? ' is-invalid' : ''),
                     'placeholder': 'Enter event title'
                 }
             }) }}
@@ -23,7 +21,7 @@
             {{ form_label(form.desecription) }}
             {{ form_widget(form.desecription, {
                 'attr': {
-                    'class': 'form-control',
+                    'class': 'form-control' ~ (form.desecription.vars.errors|length > 0 ? ' is-invalid' : ''),
                     'placeholder': 'Enter event description',
                     'rows': 4
                 }
@@ -39,7 +37,7 @@
             {{ form_label(form.date) }}
             {{ form_widget(form.date, {
                 'attr': {
-                    'class': 'form-control',
+                    'class': 'form-control' ~ (form.date.vars.errors|length > 0 ? ' is-invalid' : ''),
                     'type': 'date'
                 }
             }) }}
@@ -54,7 +52,7 @@
             {{ form_label(form.lieux) }}
             {{ form_widget(form.lieux, {
                 'attr': {
-                    'class': 'form-control',
+                    'class': 'form-control' ~ (form.lieux.vars.errors|length > 0 ? ' is-invalid' : ''),
                     'placeholder': 'Enter event location'
                 }
             }) }}
@@ -66,10 +64,24 @@
         </div>
 
         <div class="form-group">
+            {{ form_label(form.imageFile) }}
+            {{ form_widget(form.imageFile, {
+                'attr': {
+                    'class': 'form-control' ~ (form.imageFile.vars.errors|length > 0 ? ' is-invalid' : '')
+                }
+            }) }}
+            {% if form.imageFile.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.imageFile) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
             {{ form_label(form.utilisateur) }}
             {{ form_widget(form.utilisateur, {
                 'attr': {
-                    'class': 'form-control'
+                    'class': 'form-control' ~ (form.utilisateur.vars.errors|length > 0 ? ' is-invalid' : '')
                 }
             }) }}
             {% if form.utilisateur.vars.errors|length > 0 %}

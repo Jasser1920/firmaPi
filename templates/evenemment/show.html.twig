@@ -1,38 +1,92 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Evenemment{% endblock %}
+{% block title %}{{ evenement.titre }}{% endblock %}
+
+{% block stylesheets %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{ asset('lib/lightbox/css/lightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style_event.css') }}" rel="stylesheet">
+{% endblock %}
 
 {% block body %}
-    <h1>Evènemment</h1>
+    <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">{{ evenement.titre }}</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_evenemment_index') }}">Évènements</a></li>
+            <li class="breadcrumb-item active text-white">Détails</li>
+        </ol>
+    </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ evenemment.id }}</td>
-            </tr>
-            <tr>
-                <th>Titre</th>
-                <td>{{ evenemment.titre }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ evenemment.desecription }}</td>
-            </tr>
-            <tr>
-                <th>Date</th>
-                <td>{{ evenemment.date ? evenemment.date|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Lieu</th>
-                <td>{{ evenemment.lieux }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="container-fluid fruite py-5">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-lg-12">
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="fruite-img">
+                                {% if evenement.image %}
+                                    <img src="{{ evenement.image }}" class="img-fluid w-100 rounded" alt="{{ evenement.titre }}">
+                                {% else %}
+                                    <img src="{{ asset('img/default-event.jpg') }}" class="img-fluid w-100 rounded" alt="Default Event Image">
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <h2>{{ evenement.titre }}</h2>
+                            <p>{{ evenement.desecription }}</p>
+                            <p><strong>Date:</strong> {{ evenement.date ? evenement.date|date('Y-m-d') : 'N/A' }}</p>
+                            <p><strong>Lieu:</strong> {{ evenement.lieux }}</p>
+                        </div>
+                    </div>
 
-    <a href="{{ path('app_evenemment_index') }}">Retour</a>
+                    <div class="row g-4 mt-4">
+                        <div class="col-lg-12">
+                            <h3>Donateurs</h3>
+                            {% if evenement.dons is not empty %}
+                                <ul class="list-group">
+                                    {% for don in evenement.dons %}
+                                        <li class="list-group-item">
+                                            <strong>{{ don.donateur }}</strong> - {{ don.description }} ({{ don.date|date('Y-m-d') }})
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>Aucun donateur pour cet événement.</p>
+                            {% endif %}
+                        </div>
+                    </div>
 
-    <a href="{{ path('app_evenemment_edit', {'id': evenemment.id}) }}">Modifier</a>
+                    <div class="row g-4 mt-4">
+                        <div class="col-lg-12">
+                            <h3>Participants</h3>
+                            {% if evenement.participations is not empty %}
+                                <ul class="list-group">
+                                    {% for participation in evenement.participations %}
+                                        <li class="list-group-item">
+                                            <strong>{{ participation.user.nom ?? 'Utilisateur anonyme' }}</strong> <strong>{{ participation.user.prenom ?? 'Utilisateur anonyme' }}</strong>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>Aucun participant pour cet événement.</p>
+                            {% endif %}
+                        </div>
+                    </div>
 
-    {{ include('evenemment/_delete_form.html.twig') }}
+                    <div class="mt-4">
+                        <a href="{{ path('app_evenemment_index') }}" class="btn border border-secondary rounded-pill px-3 text-primary">
+                            <i class="fa fa-arrow-left me-2 text-primary"></i> Retour
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

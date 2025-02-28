@@ -1,73 +1,75 @@
-{% block body %}
-    <div class="container mt-4">
-       
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
 
-        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
-
-        <div class="form-group">
-            {{ form_label(form.donateur) }}
-            {{ form_widget(form.donateur, {
-                'attr': {
-                    'class': 'form-control',
-                    'placeholder': 'Enter donor name'
-                }
-            }) }}
-            {% if form.donateur.vars.errors|length > 0 %}
-                <div class="invalid-feedback">
-                    {{ form_errors(form.donateur) }}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.description) }}
-            {{ form_widget(form.description, {
-                'attr': {
-                    'class': 'form-control',
-                    'placeholder': 'Enter description'
-                }
-            }) }}
-            {% if form.description.vars.errors|length > 0 %}
-                <div class="invalid-feedback">
-                    {{ form_errors(form.description) }}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.date) }}
-            {{ form_widget(form.date, {
-                'attr': {
-                    'class': 'form-control',
-                    'type': 'date'
-                }
-            }) }}
-            {% if form.date.vars.errors|length > 0 %}
-                <div class="invalid-feedback">
-                    {{ form_errors(form.date) }}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.evenement) }}
-            {{ form_widget(form.evenement, {
-                'attr': {
-                    'class': 'form-control'
-                }
-            }) }}
-            {% if form.evenement.vars.errors|length > 0 %}
-                <div class="invalid-feedback">
-                    {{ form_errors(form.evenement) }}
-                </div>
-            {% endif %}
-        </div>
-
-
-        <button type="submit" class="btn btn-primary mt-3">
-            {{ button_label|default('Save') }}
-        </button>
-
-        {{ form_end(form) }}
+{# Display global form errors (e.g., if validation fails outside specific fields) #}
+{% if form.vars.errors|length > 0 %}
+    <div class="alert alert-danger">
+        {{ form_errors(form) }}
     </div>
-{% endblock %}
+{% endif %}
+
+<div class="form-group">
+    {{ form_label(form.donateur) }}
+    {{ form_widget(form.donateur, {
+        'attr': {
+            'class': 'form-control',
+            'placeholder': 'Enter donor name'
+        }
+    }) }}
+    {% if form.donateur.vars.errors|length > 0 %}
+        <div class="invalid-feedback">
+            {{ form_errors(form.donateur) }}
+        </div>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.description) }}
+    {{ form_widget(form.description, {
+        'attr': {
+            'class': 'form-control',
+            'placeholder': 'Enter description'
+        }
+    }) }}
+    {% if form.description.vars.errors|length > 0 %}
+        <div class="invalid-feedback">
+            {{ form_errors(form.description) }}
+        </div>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.date) }}
+    {{ form_widget(form.date, {
+        'attr': {
+            'class': 'form-control',
+            'type': 'date'
+        }
+    }) }}
+    {% if form.date.vars.errors|length > 0 %}
+        <div class="invalid-feedback">
+            {{ form_errors(form.date) }}
+        </div>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.evenement) }}
+    {{ form_widget(form.evenement, {
+        'attr': {
+            'class': 'form-control'
+        }
+    }) }}
+    {% if form.evenement.vars.errors|length > 0 %}
+        <div class="invalid-feedback">
+            {{ form_errors(form.evenement) }}
+        </div>
+    {% endif %}
+</div>
+
+{{ form_rest(form) }} <!-- Includes CSRF token -->
+
+<button type="submit" class="btn btn-primary mt-3">
+    {{ button_label|default('Save') }}
+</button>
+
+{{ form_end(form) }}
