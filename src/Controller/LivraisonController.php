@@ -43,16 +43,26 @@ final class LivraisonController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_livraison_show', methods: ['GET'])]
-    public function show(Livraison $livraison): Response
+    public function show(int $id, LivraisonRepository $livraisonRepository): Response
     {
+        $livraison = $livraisonRepository->find($id);
+        if (!$livraison) {
+            throw $this->createNotFoundException('Livraison non trouvée.');
+        }
+
         return $this->render('livraison/show.html.twig', [
             'livraison' => $livraison,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_livraison_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Livraison $livraison, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, int $id, LivraisonRepository $livraisonRepository, EntityManagerInterface $entityManager): Response
     {
+        $livraison = $livraisonRepository->find($id);
+        if (!$livraison) {
+            throw $this->createNotFoundException('Livraison non trouvée.');
+        }
+
         $form = $this->createForm(LivraisonType::class, $livraison);
         $form->handleRequest($request);
 
@@ -69,8 +79,13 @@ final class LivraisonController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_livraison_delete', methods: ['POST'])]
-    public function delete(Request $request, Livraison $livraison, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, int $id, LivraisonRepository $livraisonRepository, EntityManagerInterface $entityManager): Response
     {
+        $livraison = $livraisonRepository->find($id);
+        if (!$livraison) {
+            throw $this->createNotFoundException('Livraison non trouvée.');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$livraison->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($livraison);
             $entityManager->flush();

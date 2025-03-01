@@ -1,13 +1,96 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Commande{% endblock %}
+{% block title %}Modifier la commande{% endblock %}
 
 {% block body %}
-    <h1>Edit Commande</h1>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Arial', sans-serif;
+        }
+        .edit-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .edit-header {
+            background-color: #28a745;
+            color: white;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .form-section {
+            padding: 20px;
+        }
+        .form-section h2 {
+            color: #ff9500;
+            margin-bottom: 20px;
+        }
+        .btn-submit {
+            background-color: #ff9500;
+            border: none;
+        }
+        .btn-submit:hover {
+            background-color: #e08500;
+        }
+        .btn-back {
+            background-color: #28a745;
+            border: none;
+        }
+        .btn-back:hover {
+            background-color: #218838;
+        }
+        .alert {
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
 
-    {{ include('commande/_form.html.twig', {'button_label': 'Update'}) }}
+    <div class="edit-container">
+        <div class="edit-header">
+            Modifier la commande #{{ commande.id }}
+        </div>
 
-    <a href="{{ path('app_commande_index') }}">back to list</a>
+        <div class="form-section">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
 
-    {{ include('commande/_delete_form.html.twig') }}
+            {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_row(form.date_commande) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.total) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.statut) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.produits) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.livraison) }}
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="{{ path('app_commande_index') }}" class="btn btn-back">Retour</a>
+                    <button type="submit" class="btn btn-submit">Enregistrer</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}
