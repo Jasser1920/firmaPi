@@ -7,7 +7,7 @@
     {# Profile Header #}
     <div class="profile-header text-center">
         {% if app.user.profilePicture %}
-            <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}" alt="Profile Picture" class="profile-picture rounded-circle mb-3" style="width: 150px; height: 150px;">
+            <img src="{{ app.user.profilePicture }}" alt="Profile Picture" class="profile-picture rounded-circle mb-3" style="width: 150px; height: 150px;">
         {% else %}
             <div class="rounded-circle bg-secondary mb-3 mx-auto" style="width: 150px; height: 150px; line-height: 150px; color: white;">
                 {{ app.user.prenom|first }}{{ app.user.nom|first }}

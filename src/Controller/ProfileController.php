@@ -15,9 +15,17 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Cloudinary\Cloudinary;
 
 class ProfileController extends AbstractController
 {
+    private $cloudinary;
+
+    public function __construct(Cloudinary $cloudinary)
+    {
+        $this->cloudinary = $cloudinary;
+    }
+
     #[Route('/profile/edit', name: 'app_profile_edit')]
     public function editProfile(
         Request $request,
@@ -36,24 +44,22 @@ class ProfileController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Handle profile picture upload to Cloudinary
             $profilePictureFile = $form->get('profilePicture')->getData();
             if ($profilePictureFile) {
-                $originalFilename = pathinfo($profilePictureFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $profilePictureFile->guessExtension();
-
                 try {
-                    $profilePictureFile->move(
-                        $this->getParameter('profile_picture_directory'),
-                        $newFilename
-                    );
-                    $user->setProfilePicture($newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'There was an error uploading your profile picture.');
+                    $uploadResult = $this->cloudinary->uploadApi()->upload($profilePictureFile->getPathname(), [
+                        'folder' => 'profile_pictures',
+                        'public_id' => 'user_' . $user->getId() . '_' . uniqid(),
+                    ]);
+                    $user->setProfilePicture($uploadResult['secure_url']);
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Failed to upload profile picture to Cloudinary.');
                     return $this->redirectToRoute('app_profile_edit');
                 }
             }
 
+            // Handle email change and verification
             $newEmail = $user->getEmail();
             if ($originalEmail !== $newEmail) {
                 $confirmationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -66,8 +72,10 @@ class ProfileController extends AbstractController
                     ->subject('Your Email Confirmation Code')
                     ->htmlTemplate('emails/confirmation_code.html.twig')
                     ->context(['code' => $confirmationCode, 'user' => $user]);
+
                 try {
                     $mailer->send($email);
+                    $this->addFlash('success', 'A confirmation code has been sent to your new email.');
                 } catch (\Exception $e) {
                     $this->addFlash('error', 'Failed to send confirmation email. Please try again later.');
                     return $this->redirectToRoute('app_profile_edit');
@@ -76,10 +84,10 @@ class ProfileController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                $this->addFlash('success', 'A confirmation code has been sent to your new email.');
                 return $this->redirectToRoute('app_verify_code');
             }
 
+            // Persist changes if no email change (e.g., profile picture or other fields)
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -98,10 +106,8 @@ class ProfileController extends AbstractController
         EntityManagerInterface $entityManager,
         UtilisateurRepository $utilisateurRepository
     ): Response {
-        // If the user is logged in, use their session
         $user = $this->getUser();
 
-        // If the user is not logged in, check for an email in the session
         if (!$user) {
             $email = $request->getSession()->get('verify_email');
             if (!$email) {
@@ -109,7 +115,6 @@ class ProfileController extends AbstractController
                 return $this->redirectToRoute('app_register');
             }
 
-            // Fetch the user by email
             $user = $utilisateurRepository->findOneBy(['email' => $email]);
             if (!$user) {
                 $this->addFlash('error', 'User not found. Please register again.');
@@ -130,7 +135,7 @@ class ProfileController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', 'Your email has been verified!');
-                return $this->redirectToRoute('app_login'); // Redirect to login after verification
+                return $this->redirectToRoute('app_login');
             } else {
                 $this->addFlash('error', 'Invalid confirmation code.');
             }

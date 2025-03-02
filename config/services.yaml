@@ -1,18 +1,16 @@
 # config/services.yaml
 
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    cloudinary_url: '%env(CLOUDINARY_URL)%'
     profile_picture_directory: '%kernel.project_dir%/public/uploads/profile_pictures'
 
 services:
-    # default configuration for services in *this* file
+    # Default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
+    # Makes classes in src/ available to be used as services
     App\:
         resource: '../src/'
         exclude:
@@ -20,6 +18,28 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
-    
+    # Service Cloudinary
+    cloudinary:
+        class: Cloudinary\Cloudinary
+        arguments:
+            - '%cloudinary_url%'
+
+    # Alias pour lier Cloudinary\Cloudinary au service 'cloudinary'
+    Cloudinary\Cloudinary: '@cloudinary'
+
+    # Twilio Client
+    twilio.client:
+        class: Twilio\Rest\Client
+        arguments:
+            - '%env(TWILIO_SID)%'
+            - '%env(TWILIO_AUTH_TOKEN)%'
+
+    # ReclammationCrudController with Twilio
+    App\Controller\Admin\ReclammationCrudController:
+        arguments:
+            $twilio: '@twilio.client'
+
+    # ReponseReclamationController with Twilio
+    App\Controller\ReponseReclamationController:
+        arguments:
+            $twilio: '@twilio.client'
