@@ -1,0 +1,34 @@
+.fruite-item {
+    overflow: hidden; /* Prevents content from spilling out */
+    height: 100%; /* Ensures uniform height */
+    display: flex;
+    flex-direction: column;
+}
+
+.fruite-item .fruite-img {
+    flex-shrink: 0; /* Keeps the image from shrinking */
+}
+
+.fruite-item .p-4 {
+    flex-grow: 1; /* Allows the content area to grow and push footer to the bottom */
+    overflow: hidden; /* Ensures text stays within bounds */
+    display: flex;
+    flex-direction: column;
+}
+
+.fruite-item p {
+    overflow-wrap: break-word; /* Breaks long words to prevent overflow */
+    word-wrap: break-word; /* Ensures text wraps properly */
+    -webkit-hyphens: auto; /* Enables hyphenation for better text flow */
+    -ms-hyphens: auto;
+    hyphens: auto;
+    max-height: 100px; /* Limits description height */
+    text-overflow: ellipsis; /* Adds "..." if text overflows */
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* Limits to 4 lines */
+    -webkit-box-orient: vertical;
+}
+
+.fruite-item .d-flex.justify-content-between.flex-lg-wrap.mt-3 {
+    margin-top: auto; /* Pushes buttons to the bottom of the card */
+}

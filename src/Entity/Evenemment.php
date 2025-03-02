@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EvenemmentRepository::class)]
@@ -18,6 +19,7 @@ class Evenemment
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le titre ne peut pas être vide.")]
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -35,24 +37,35 @@ class Evenemment
         message: "La date ne peut pas être dans le passé."
     )]
     private ?\DateTimeInterface $date = null;
-    public function __construct()
-{
-    $this->date = new \DateTime(); // Initialise avec la date du jour
-    $this->dons = new ArrayCollection();
-}
-
 
     #[ORM\Column(length: 255)]
     private ?string $lieux = null;
 
-    /**
-     * @var Collection<int, Don>
-     */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
+    #[Assert\File(
+        maxSize: "5M",
+        mimeTypes: ["image/jpeg", "image/png", "image/gif"],
+        mimeTypesMessage: "Veuillez uploader une image valide (JPEG, PNG, GIF)."
+    )]
+    private ?File $imageFile = null;
+
     #[ORM\OneToMany(targetEntity: Don::class, mappedBy: 'evenement')]
     private Collection $dons;
 
     #[ORM\ManyToOne(inversedBy: 'evenement')]
     private ?Utilisateur $utilisateur = null;
+
+    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'evenement', orphanRemoval: true)]
+    private Collection $participations;
+
+    public function __construct()
+    {
+        $this->date = new \DateTime();
+        $this->dons = new ArrayCollection();
+        $this->participations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -67,7 +80,6 @@ class Evenemment
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
-
         return $this;
     }
 
@@ -79,7 +91,6 @@ class Evenemment
     public function setDesecription(string $desecription): static
     {
         $this->desecription = $desecription;
-
         return $this;
     }
 
@@ -91,7 +102,6 @@ class Evenemment
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
-
         return $this;
     }
 
@@ -103,13 +113,31 @@ class Evenemment
     public function setLieux(string $lieux): static
     {
         $this->lieux = $lieux;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Don>
-     */
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
+        return $this;
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageFile(?File $imageFile = null): static
+    {
+        $this->imageFile = $imageFile;
+        return $this;
+    }
+
     public function getDons(): Collection
     {
         return $this->dons;
@@ -121,19 +149,16 @@ class Evenemment
             $this->dons->add($don);
             $don->setEvenement($this);
         }
-
         return $this;
     }
 
     public function removeDon(Don $don): static
     {
         if ($this->dons->removeElement($don)) {
-            // set the owning side to null (unless already changed)
             if ($don->getEvenement() === $this) {
                 $don->setEvenement(null);
             }
         }
-
         return $this;
     }
 
@@ -145,7 +170,30 @@ class Evenemment
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
+        return $this;
+    }
 
+    public function getParticipations(): Collection
+    {
+        return $this->participations;
+    }
+
+    public function addParticipation(Participation $participation): static
+    {
+        if (!$this->participations->contains($participation)) {
+            $this->participations->add($participation);
+            $participation->setEvenement($this);
+        }
+        return $this;
+    }
+
+    public function removeParticipation(Participation $participation): static
+    {
+        if ($this->participations->removeElement($participation)) {
+            if ($participation->getEvenement() === $this) {
+                $participation->setEvenement(null);
+            }
+        }
         return $this;
     }
 }

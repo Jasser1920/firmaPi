@@ -4,12 +4,12 @@
 
 {% block body %}
 <div class="login-container">
-        <div class="login-box-produit-add" >
-    <h1>Créer un don</h1>
+    <div class="login-box-produit-add">
+        <h1>Créer un don</h1>
 
-    {{ include('don/_form.html.twig') }}
+        {{ include('don/_form.html.twig', {'form': form}) }}
 
-    <a href="{{ path('app_don_index') }}">Retour</a>
+        <a href="{{ path('app_don_index') }}">Retour</a>
     </div>
-    </div>
+</div>
 {% endblock %}

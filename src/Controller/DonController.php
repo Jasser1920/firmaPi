@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Don;
+use App\Entity\Participation;
 use App\Form\DonType;
 use App\Repository\DonRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,23 +23,51 @@ final class DonController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_don_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new/{eventId}', name: 'app_don_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, int $eventId): Response
     {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $participation = $entityManager->getRepository(Participation::class)->findOneBy([
+            'user' => $user,
+            'evenement' => $eventId,
+        ]);
+
+        if (!$participation) {
+            throw $this->createAccessDeniedException('Vous devez participer à cet événement pour faire un don.');
+        }
+
         $don = new Don();
+        $don->setEvenement($participation->getEvenement());
+        $don->setDonsUser($user);
         $form = $this->createForm(DonType::class, $don);
         $form->handleRequest($request);
 
+        // Log form submission details
+        if ($form->isSubmitted()) {
+            dump('Form submitted at: ' . (new \DateTime())->format('Y-m-d H:i:s'));
+            dump('Form data:', $form->getData());
+            dump('Form is valid:', $form->isValid());
+            if (!$form->isValid()) {
+                dump('Form errors:', $form->getErrors(true, true));
+            }
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
+            dump('Persisting Don:', $don);
             $entityManager->persist($don);
             $entityManager->flush();
+            dump('Database flush completed');
 
-            return $this->redirectToRoute('app_don_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_evenemment_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('don/new.html.twig', [
             'don' => $don,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -64,7 +93,7 @@ final class DonController extends AbstractController
 
         return $this->render('don/edit.html.twig', [
             'don' => $don,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 

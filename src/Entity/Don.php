@@ -18,7 +18,7 @@ class Don
     #[ORM\Column(length: 255)]
     private ?string $donateur = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT)] // Changed from length: 255 to TEXT to support max: 500
     #[Assert\Length(
         min: 50,
         max: 500,
@@ -26,10 +26,12 @@ class Don
         maxMessage: "La description ne doit pas dépasser {{ limit }} caractères."
     )]
     private ?string $description = null;
+
     public function __construct()
-{
-    $this->date = new \DateTime(); // Initialise avec la date du jour
-}
+    {
+        $this->date = new \DateTime(); // Initialise avec la date du jour
+    }
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
@@ -52,7 +54,6 @@ class Don
     public function setDonateur(string $donateur): static
     {
         $this->donateur = $donateur;
-
         return $this;
     }
 
@@ -64,7 +65,6 @@ class Don
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -76,7 +76,6 @@ class Don
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
-
         return $this;
     }
 
@@ -88,7 +87,6 @@ class Don
     public function setEvenement(?Evenemment $evenement): static
     {
         $this->evenement = $evenement;
-
         return $this;
     }
 
@@ -100,7 +98,6 @@ class Don
     public function setDonsUser(?Utilisateur $dons_user): static
     {
         $this->dons_user = $dons_user;
-
         return $this;
     }
 }
