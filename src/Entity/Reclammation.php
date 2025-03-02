@@ -17,6 +17,9 @@ class Reclammation
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private ?string $titre = null;
+
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
@@ -28,7 +31,6 @@ class Reclammation
 
     #[ORM\ManyToOne(inversedBy: 'reclamation')]
     private ?Utilisateur $utilisateur = null;
-
 
     #[ORM\OneToMany(targetEntity: ReponseReclamation::class, mappedBy: 'reclamation', cascade: ['remove'])]
     private Collection $reponseReclamations;
@@ -43,6 +45,17 @@ class Reclammation
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTitre(): ?string
+    {
+        return $this->titre;
+    }
+
+    public function setTitre(string $titre): static
+    {
+        $this->titre = $titre;
+        return $this;
     }
 
     public function getDescription(): ?string
@@ -98,19 +111,19 @@ class Reclammation
     {
         return $this->reponseReclamations;
     }
-    // In App\Entity\Reclammation
-public function getRepliesSummary(): string
-{
-    $replies = $this->getReponseReclamations();
-    if ($replies->isEmpty()) {
-        return 'No replies yet.';
-    }
 
-    $summary = [];
-    foreach ($replies as $reply) {
-        $summary[] = $reply->getMessage() . ' (' . $reply->getDateReponse()->format('Y-m-d H:i:s') . ')';
-    }
+    public function getRepliesSummary(): string
+    {
+        $replies = $this->getReponseReclamations();
+        if ($replies->isEmpty()) {
+            return 'No replies yet.';
+        }
 
-    return implode('<br>', $summary);
-}
+        $summary = [];
+        foreach ($replies as $reply) {
+            $summary[] = $reply->getMessage() . ' (' . $reply->getDateReponse()->format('Y-m-d H:i:s') . ')';
+        }
+
+        return implode('<br>', $summary);
+    }
 }

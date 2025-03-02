@@ -16,7 +16,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -39,12 +38,16 @@ class ReclammationCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
+        // Disable NEW, EDIT, and DELETE actions
         $actions->disable(Action::NEW);
         $actions->disable(Action::EDIT);
+        $actions->disable(Action::DELETE);
 
         $replyAction = Action::new('reply', 'Reply', 'fa fa-reply')
             ->linkToRoute('admin_reclamation_reply', fn(Reclammation $reclamation): array => ['id' => $reclamation->getId()])
-            ->setCssClass('btn btn-primary');
+            ->setCssClass('btn btn-primary')
+            // Only display Reply button if no replies exist
+            ->displayIf(fn(Reclammation $reclamation) => $reclamation->getReponseReclamations()->isEmpty());
 
         $resolvedAction = Action::new('resolved', 'Mark as Resolved', 'fa fa-check')
             ->linkToRoute('admin_reclamation_resolved', fn(Reclammation $reclamation): array => ['id' => $reclamation->getId()])
@@ -71,6 +74,12 @@ class ReclammationCrudController extends AbstractCrudController
         if (!$reclamation) {
             $this->addFlash('danger', 'Reclamation not found!');
             return $this->redirectToRoute('admin_dashboard', ['entity' => 'Reclammation', 'action' => 'index']);
+        }
+
+        // Check if a reply already exists
+        if (!$reclamation->getReponseReclamations()->isEmpty()) {
+            $this->addFlash('warning', 'A reply has already been submitted for this reclamation.');
+            return $this->redirectToRoute('admin_dashboard', ['entity' => 'Reclammation', 'action' => 'detail', 'id' => $reclamation->getId()]);
         }
 
         $reply = new ReponseReclamation();
@@ -142,6 +151,7 @@ class ReclammationCrudController extends AbstractCrudController
     {
         $fields = [
             IdField::new('id')->hideOnForm(),
+            TextField::new('titre'),
             TextEditorField::new('description')->onlyOnIndex(),
             ChoiceField::new('statut')
                 ->setChoices([

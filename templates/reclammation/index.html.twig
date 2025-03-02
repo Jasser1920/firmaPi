@@ -10,7 +10,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Id</th>
+                    <th>Titre</th>
                     <th>Description</th>
                     <th>Date de création</th>
                     <th>Statut</th>
@@ -21,7 +21,7 @@
             <tbody>
             {% for reclammation in reclammations %}
                 <tr>
-                    <td>{{ reclammation.id }}</td>
+                    <td>{{ reclammation.titre }}</td>
                     <td>{{ reclammation.description }}</td>
                     <td>{{ reclammation.dateCreation ? reclammation.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
                     <td>{{ reclammation.statut.label() }}</td>
@@ -35,8 +35,10 @@
                         {% endif %}
                     </td>
                     <td>
-                        {# <a href="{{ path('app_reclammation_show', {'id': reclammation.id}) }}">Voir</a> #}
-                        <a href="{{ path('app_reclammation_edit', {'id': reclammation.id}) }}">Modifier</a>
+                        {# Hide 'Modifier' if status is 'Résolue' or 'Rejetée' #}
+                        {% if reclammation.statut.label() != 'Résolue' and reclammation.statut.label() != 'Rejetée' %}
+                            <a href="{{ path('app_reclammation_edit', {'id': reclammation.id}) }}">Modifier</a>
+                        {% endif %}
                     </td>
                 </tr>
             {% else %}
@@ -75,7 +77,6 @@
                                         <td>{{ reponse_reclamation.id }}</td>
                                         <td>{{ reponse_reclamation.message }}</td>
                                         <td>{{ reponse_reclamation.dateReponse ? reponse_reclamation.dateReponse|date('Y-m-d H:i:s') : '' }}</td>
-                                       
                                     </tr>
                                 {% else %}
                                     <tr>
