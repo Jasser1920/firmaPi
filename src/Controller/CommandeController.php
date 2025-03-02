@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
+use GuzzleHttp\Client;
 
 #[Route('/commande')]
 final class CommandeController extends AbstractController
@@ -215,4 +216,65 @@ final class CommandeController extends AbstractController
 
         return $this->redirectToRoute('app_commande_index');
     }
+    #[Route('/{id}/generate-invoice', name: 'app_commande_generate_invoice', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function generateInvoice(int $id, CommandeRepository $commandeRepository): Response
+    {
+        $commande = $commandeRepository->find($id);
+        if (!$commande) {
+            throw $this->createNotFoundException('Commande non trouvée.');
+        }
+
+        // Générer la facture PDF
+        $pdfUrl = $this->generateInvoicePdf($commande);
+
+        if (!$pdfUrl) {
+            $this->addFlash('error', 'Erreur lors de la génération de la facture.');
+            return $this->redirectToRoute('app_commande_show', ['id' => $commande->getId()]);
+        }
+
+        // Rediriger vers l'URL temporaire du PDF hébergé par PDF.co
+        return $this->redirect($pdfUrl);
+    }
+
+    /**
+     * Génère une facture PDF à partir des données de la commande
+     */
+    private function generateInvoicePdf(Commande $commande): ?string
+    {
+        // Rendre le template HTML pour la facture
+        $html = $this->renderView('commande/invoice_template.html.twig', [
+            'commande' => $commande,
+            'produits' => $commande->getProduits(),
+            'total' => $commande->getTotal(),
+        ]);
+
+        // Configurer le client Guzzle pour appeler PDF.co
+        $client = new Client();
+        $apiKey = $_ENV['PDFCO_API_KEY'];
+
+        try {
+            $response = $client->post('https://api.pdf.co/v1/pdf/convert/from/html', [
+                'headers' => [
+                    'x-api-key' => $apiKey,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'html' => $html,
+                    'name' => 'facture_' . $commande->getId() . '.pdf',
+                    'async' => false, // Génération synchrone
+                ],
+            ]);
+
+            $result = json_decode($response->getBody()->getContents(), true);
+            if ($result['error']) {
+                throw new \Exception($result['message']);
+            }
+
+            return $result['url']; // Retourne l'URL temporaire du PDF
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erreur lors de la génération : ' . $e->getMessage());
+            return null;
+        }
+    }
+    
 }
