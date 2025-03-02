@@ -5,51 +5,38 @@ namespace App\Form;
 use App\Entity\Commande;
 use App\Entity\Livraison;
 use App\Entity\Produit;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use App\Enum\StatutCommande;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Enum\StatutCommande; // Assure-toi que cette classe existe bien
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-
 
 class CommandeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        // ->add('date_commande', DateType::class, [
-        //     'widget' => 'single_text',
-        //     'html5' => true,  // Enables the browser's native date picker
-        // ])
-        // ->add('date_commande', DateType::class, [
-        //     'widget' => 'single_text',
-        //     'html5' => true,
-        //     // 'input' => 'datetime', // Convertit l'entrée en DateTimeInterface
-        //     'format' => 'yyyy-MM-dd', // Format compatible avec DateTime
-        //     'attr' => ['class' => 'form-control'],
-        // ])
-        ->add('date_commande', DateType::class, [
-            'widget' => 'single_text',
-            'html5' => true,
-            'format' => 'yyyy-MM-dd', // Vérifie que ce format est bien celui qui est attendu
-            'attr' => ['class' => 'form-control'],
-        ])
-        
-        
-        
-            ->add('total')
+            ->add('date_commande', DateType::class, [
+                'widget' => 'single_text',
+                'html5' => true,
+                'format' => 'yyyy-MM-dd',
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('total', NumberType::class, [
+                'attr' => ['class' => 'form-control'],
+            ])
             ->add('statut', ChoiceType::class, [
                 'choices' => [
-                    'En attente' => StatutCommande::EN_ATTENTE,
-                    'En cours' => StatutCommande::EN_COURS,
-                    'Résolue' => StatutCommande::RESOLUE,
-                    'Rejetée' => StatutCommande::REJETEE,
+                    StatutCommande::EN_ATTENTE,
+                    StatutCommande::EN_COURS,
+                    StatutCommande::RESOLUE,
+                    StatutCommande::REJETEE,
                 ],
-                'choice_label' => fn ($choice) => $choice->label(), // Assure-toi que label() existe dans StatutCommande
+                'choice_label' => fn(StatutCommande $choice) => $choice->label(),
+                'choice_value' => fn(StatutCommande $choice) => $choice->value,
                 'placeholder' => 'Sélectionner un statut',
                 'required' => true,
                 'attr' => ['class' => 'form-control'],
@@ -58,10 +45,15 @@ class CommandeType extends AbstractType
                 'class' => Produit::class,
                 'choice_label' => 'nom',
                 'multiple' => true,
+                'expanded' => false,
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('livraison', EntityType::class, [
                 'class' => Livraison::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom_societe',
+                'placeholder' => 'Sélectionner une société de livraison',
+                'required' => true,
+                'attr' => ['class' => 'form-control'],
             ]);
     }
 
@@ -71,4 +63,4 @@ class CommandeType extends AbstractType
             'data_class' => Commande::class,
         ]);
     }
-}
+}   

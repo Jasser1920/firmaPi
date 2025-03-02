@@ -8,7 +8,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 #[ORM\Entity(repositoryClass: LivraisonRepository::class)]
 class Livraison
 {
@@ -41,7 +40,7 @@ class Livraison
 
     public function __construct()
     {
-        $this->statut = StatutLivraison::EN_ATTENTE; // Default status
+        $this->statut = StatutLivraison::EN_ATTENTE;
     }
 
     public function getId(): ?int
@@ -57,7 +56,6 @@ class Livraison
     public function setNomSociete(string $nom_societe): static
     {
         $this->nom_societe = $nom_societe;
-
         return $this;
     }
 
@@ -69,7 +67,6 @@ class Livraison
     public function setAdresseLivraison(string $adresse_livraison): static
     {
         $this->adresse_livraison = $adresse_livraison;
-
         return $this;
     }
 
@@ -81,7 +78,6 @@ class Livraison
     public function setDateLivraison(\DateTimeInterface $date_livraison): static
     {
         $this->date_livraison = $date_livraison;
-
         return $this;
     }
 
@@ -93,7 +89,6 @@ class Livraison
     public function setStatut(StatutLivraison $statut): static
     {
         $this->statut = $statut;
-
         return $this;
     }
 }

@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement réussi{% endblock %}
+
+{% block body %}
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Arial', sans-serif;
+        }
+        .success-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .success-header {
+            background-color: #28a745;
+            color: white;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .btn-continue {
+            background-color: #ff9500;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+        .btn-continue:hover {
+            background-color: #e08500;
+        }
+        .alert {
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <div class="success-container">
+        <div class="success-header">
+            Paiement réussi !
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="p-4">
+            <p>Votre commande (ID: {{ commande.id }}) a été confirmée avec succès.</p>
+            <p><strong>Total :</strong> {{ commande.total }} €</p>
+            <a href="{{ path('app_produit_index') }}" class="btn btn-continue">Continuer vos achats</a>
+        </div>
+    </div>
+{% endblock %}
