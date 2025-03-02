@@ -3,14 +3,14 @@
 parameters:
     cloudinary_url: '%env(CLOUDINARY_URL)%'
     profile_picture_directory: '%kernel.project_dir%/public/uploads/profile_pictures'
+    twilio_sid: '%env(TWILIO_SID)%'
+    twilio_auth_token: '%env(TWILIO_AUTH_TOKEN)%'
 
 services:
-    # Default configuration for services in *this* file
     _defaults:
         autowire: true
         autoconfigure: true
 
-    # Makes classes in src/ available to be used as services
     App\:
         resource: '../src/'
         exclude:
@@ -18,28 +18,26 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # Service Cloudinary
-    cloudinary:
-        class: Cloudinary\Cloudinary
+    # Cloudinary service
+    Cloudinary\Cloudinary:
         arguments:
             - '%cloudinary_url%'
 
-    # Alias pour lier Cloudinary\Cloudinary au service 'cloudinary'
-    Cloudinary\Cloudinary: '@cloudinary'
-
-    # Twilio Client
-    twilio.client:
-        class: Twilio\Rest\Client
+    # Twilio Client service
+    Twilio\Rest\Client:
         arguments:
-            - '%env(TWILIO_SID)%'
-            - '%env(TWILIO_AUTH_TOKEN)%'
+            - '%twilio_sid%'
+            - '%twilio_auth_token%'
 
-    # ReclammationCrudController with Twilio
+    # Explicit controller configurations
     App\Controller\Admin\ReclammationCrudController:
         arguments:
-            $twilio: '@twilio.client'
+            $twilio: '@Twilio\Rest\Client'
 
-    # ReponseReclamationController with Twilio
     App\Controller\ReponseReclamationController:
         arguments:
-            $twilio: '@twilio.client'
+            $twilio: '@Twilio\Rest\Client'
+
+    App\Controller\ProfileController:
+        arguments:
+            $cloudinary: '@Cloudinary\Cloudinary'

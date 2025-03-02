@@ -54,7 +54,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotNull(message: "Le rôle ne peut pas être nul.")]
     private Role $role;
     
-    #[ORM\Column(type:"string", length:255, nullable:true)]
+    #[ORM\Column(type:'string', length:255, nullable:true)]
     private $profilePicture;
 
     #[ORM\Column(type: 'boolean')]
