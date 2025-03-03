@@ -4,11 +4,11 @@
 
 {% block body %}
     <div class="login-container">
-        <div class="login-box-produit-add" >
+        <div class="login-box-produit-add">
             <h2>Create new Produit</h2>
 
-            <!-- Include the form from _form.html.twig -->
-            {{ include('produit/_form.html.twig') }}
+            <!-- Include the form, ensuring file uploads are supported -->
+            {{ include('produit/_form.html.twig', {'button_label': 'Create Product'}) }}
 
             <!-- Link to product list -->
             <a href="{{ path('app_produit_index') }}" class="back-link">Back to list</a>

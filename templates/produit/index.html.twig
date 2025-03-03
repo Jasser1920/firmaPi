@@ -3,51 +3,124 @@
 {% block title %}Liste des Produits{% endblock %}
 
 {% block body %}
-
-<div class="login-container">
-        <div class="login-box-produit">
-    <h1>Liste des Produits</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Prix</th>
-                <th>Description</th>
-                <th>Image</th>
-                <th>Quantité</th>
-                <th>Date d'expiration</th>
-                <th>Catégorie</th> {# Ajout de la colonne Catégorie #}
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for produit in produits %}
-            <tr>
-                <td>{{ produit.id }}</td>
-                <td>{{ produit.nom }}</td>
-                <td>{{ produit.prix }}</td>
-                <td>{{ produit.description }}</td>
-                <td><img src="{{ asset('uploads/images/' ~ produit.image) }}" alt="{{ produit.nom }}" width="50"></td> {# Ajout de l'affichage de l'image #}
-                <td>{{ produit.quantite }}</td>
-                <td>{{ produit.dateExpiration ? produit.dateExpiration|date('Y-m-d') : 'Non définie' }}</td>
-                <td>{{ produit.categorie ? produit.categorie.nomCategorie : 'Aucune' }}</td>
-
-                <td>
-                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-info btn-sm">Voir</a>
-                    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="9" class="text-center">Aucun produit trouvé</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_produit_new') }}" class="btn btn-success">Créer un nouveau produit</a>
+    <!-- Single Page Header start -->
+    <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Shop</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Pages</a></li>
+            <li class="breadcrumb-item active text-white">Shop</li>
+        </ol>
     </div>
+    <!-- Single Page Header End -->
+
+    <!-- Fruits Shop Start -->
+    <div class="container-fluid fruite py-5">
+        <div class="container py-5">
+            <h1 class="mb-4">Liste des Produits</h1>
+            <div class="row g-4">
+                <div class="col-lg-12">
+                    <div class="row g-4">
+                        <div class="col-xl-3">
+                            <div class="input-group w-100 mx-auto d-flex">
+                                <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
+                                <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-6"></div>
+                        <div class="col-xl-3">
+                            <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
+                                <label for="fruits">Default Sorting:</label>
+                                <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3" form="fruitform">
+                                    <option value="volvo">Nothing</option>
+                                    <option value="saab">Popularity</option>
+                                    <option value="opel">Organic</option>
+                                    <option value="audi">Fantastic</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-3">
+                            <!-- Sidebar content (Categories, Price, etc.) -->
+                            <div class="row g-4">
+                                
+                                </div>
+                                <!-- Price Filter -->
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <h4 class="mb-2">Price</h4>
+                                        <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="amount.value=rangeInput.value">
+                                        <output id="amount" name="amount" min-value="0" max-value="500" for="rangeInput">0</output>
+                                    </div>
+                                </div>
+                                <!-- Additional Filters -->
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <h4>Additional</h4>
+                                        <div class="mb-2">
+                                            <input type="radio" class="me-2" id="Categories-1" name="Categories-1" value="Organic">
+                                            <label for="Categories-1">Organic</label>
+                                        </div>
+                                        <div class="mb-2">
+                                            <input type="radio" class="me-2" id="Categories-2" name="Categories-1" value="Fresh">
+                                            <label for="Categories-2">Fresh</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="row g-4 justify-content-center">
+                                {% for produit in produits %}
+                                    <div class="col-md-6 col-lg-6 col-xl-4">
+                                        <div class="rounded position-relative fruite-item">
+                                            <div class="fruite-img">
+                                                {% if produit.image %}
+                                                    <img src="{{ produit.image }}" class="img-fluid w-100 rounded-top" alt="{{ produit.nom }}">
+                                                {% else %}
+                                                    <img src="img/default-product.jpg" class="img-fluid w-100 rounded-top" alt="No image">
+                                                {% endif %}
+                                            </div>
+                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">
+                                                {{ produit.categorie ? produit.categorie.nomCategorie : 'Aucune' }}
+                                            </div>
+                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                                <h4>{{ produit.nom }}</h4>
+                                                <p>{{ produit.description }}</p>
+                                                <div class="d-flex justify-content-between flex-lg-wrap">
+                                                    <p class="text-dark fs-5 fw-bold mb-0">{{ produit.prix }} €</p>
+                                                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn border border-secondary rounded-pill px-3 text-primary">
+                                                        <i class="fa fa-shopping-bag me-2 text-primary"></i> Voir
+                                                    </a>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-12">
+                                        <p class="text-center">Aucun produit trouvé</p>
+                                    </div>
+                                {% endfor %}
+                                <div class="col-12">
+                                    <div class="pagination d-flex justify-content-center mt-5">
+                                        <a href="#" class="rounded">«</a>
+                                        <a href="#" class="active rounded">1</a>
+                                        <a href="#" class="rounded">2</a>
+                                        <a href="#" class="rounded">3</a>
+                                        <a href="#" class="rounded">»</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="{{ path('app_produit_new') }}" class="btn btn-success">Créer un nouveau produit</a>
+        </div>
     </div>
+    <!-- Fruits Shop End -->
 {% endblock %}

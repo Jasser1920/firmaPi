@@ -41,3 +41,8 @@ services:
     App\Controller\ProfileController:
         arguments:
             $cloudinary: '@Cloudinary\Cloudinary'
+    # TextRazor        
+    App\Service\TextRazorService:
+        arguments:
+            $apiKey: '%env(TEXTRAZOR_API_KEY)%'
+            $httpClient: '@Symfony\Contracts\HttpClient\HttpClientInterface'

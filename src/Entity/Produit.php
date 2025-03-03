@@ -23,13 +23,14 @@ class Produit
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $image = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+    
     #[ORM\Column(length: 255)]
     private ?string $quantite = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]    
     private ?\DateTimeInterface $date_expiration = null;
 
     #[ORM\ManyToOne(inversedBy: 'produits')]

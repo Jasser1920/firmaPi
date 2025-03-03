@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Produit{% endblock %}
+{% block title %}Détails du Produit{% endblock %}
 
 {% block body %}
     <h1>Détails du Produit</h1>
@@ -27,7 +27,7 @@
                 <th>Image</th>
                 <td>
                     {% if produit.image %}
-                        <img src="{{ asset('uploads/images/' ~ produit.image) }}" alt="{{ produit.nom }}" width="100">
+                        <img src="{{ produit.image }}" alt="{{ produit.nom }}" width="100">
                     {% else %}
                         Aucune image disponible
                     {% endif %}
@@ -44,8 +44,6 @@
             <tr>
                 <th>Catégorie</th>
                 <td>{{ produit.categorie ? produit.categorie.nomCategorie : 'Aucune' }}</td>
-
-
             </tr>
         </tbody>
     </table>

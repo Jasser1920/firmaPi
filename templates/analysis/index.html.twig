@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Produit Analysis</title>
+</head>
+<body>
+    <h1>Produit: {{ produit.nom }}</h1>
+    <p>Description: {{ produit.description }}</p>
+    <p>Category: {{ produit.categorie ? produit.categorie.nomCategorie : 'None' }}</p>
+
+    <h2>Extracted Products</h2>
+    <ul>
+        {% for product in products %}
+            <li>{{ product }}</li>
+        {% else %}
+            <li>No products found</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Extracted Categories</h2>
+    <ul>
+        {% for category in categories %}
+            <li>{{ category }}{% if produit.categorie and produit.categorie.nomCategorie == category %} (Assigned){% endif %}</li>
+        {% else %}
+            <li>No categories found</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

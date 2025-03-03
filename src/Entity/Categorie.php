@@ -75,4 +75,14 @@ class Categorie
 
         return $this;
     }
+
+    /**
+     * Convert the Categorie object to a string representation.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->nom_categorie ?? 'Unnamed Category'; // Fallback if nom_categorie is null
+    }
 }
