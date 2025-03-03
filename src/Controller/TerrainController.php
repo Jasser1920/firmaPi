@@ -29,11 +29,20 @@ final class TerrainController extends AbstractController
         $form = $this->createForm(TerrainType::class, $terrain);
         $form->handleRequest($request);
 
+        // Débogage : vérifier l'état du formulaire uniquement si soumis
+        if ($form->isSubmitted()) {
+            dump($form->isSubmitted(), $form->isValid(), $form->getErrors(true));
+        } else {
+            dump($form->isSubmitted(), 'Formulaire non soumis', null);
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($terrain);
             $entityManager->flush();
-
+            $this->addFlash('success', 'Le terrain a été ajouté avec succès !');
             return $this->redirectToRoute('app_terrain_index', [], Response::HTTP_SEE_OTHER);
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Erreur lors de l\'ajout du terrain. Vérifiez les champs.');
         }
 
         return $this->render('terrain/new.html.twig', [
@@ -42,11 +51,21 @@ final class TerrainController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_terrain_show', methods: ['GET'])]
-    public function show(Terrain $terrain): Response
+    #[Route('/{id}', name: 'app_terrain_show', methods: ['GET', 'POST'])]
+    public function show(Request $request, Terrain $terrain, EntityManagerInterface $entityManager): Response
     {
+        $form = $this->createForm(TerrainType::class, $terrain);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Terrain mis à jour avec succès !');
+            return $this->redirectToRoute('app_terrain_show', ['id' => $terrain->getId()]);
+        }
+
         return $this->render('terrain/show.html.twig', [
             'terrain' => $terrain,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -58,7 +77,7 @@ final class TerrainController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+            $this->addFlash('success', 'Terrain mis à jour avec succès !');
             return $this->redirectToRoute('app_terrain_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -68,12 +87,15 @@ final class TerrainController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_terrain_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_terrain_delete', methods: ['POST'])]
     public function delete(Request $request, Terrain $terrain, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$terrain->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $terrain->getId(), $request->request->get('_token'))) {
             $entityManager->remove($terrain);
             $entityManager->flush();
+            $this->addFlash('success', 'Le terrain a été supprimé avec succès !');
+        } else {
+            $this->addFlash('error', 'Échec de la suppression du terrain.');
         }
 
         return $this->redirectToRoute('app_terrain_index', [], Response::HTTP_SEE_OTHER);

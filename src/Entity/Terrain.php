@@ -28,10 +28,11 @@ class Terrain
     #[Assert\Range(min: 1, max: 10000, notInRangeMessage: "La superficie doit être comprise entre 1 et 10 000 m².")]
     private ?float $superficie = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "La localisation est obligatoire.")]
-    #[Assert\Length(min: 3, max: 255, minMessage: "La localisation doit contenir au moins 3 caractères.", maxMessage: "La localisation ne peut pas dépasser 255 caractères.")]
-    private ?string $localisation = null;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $latitude = null;
+
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $longitude = null;
 
     #[ORM\Column(type: 'float')]
     #[Assert\NotBlank(message: "Le prix de location est obligatoire.")]
@@ -42,7 +43,7 @@ class Terrain
     #[Assert\NotNull(message: "La disponibilité doit être spécifiée.")]
     private ?bool $disponibilite = false;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $date_creation = null;
 
     #[ORM\ManyToOne(inversedBy: 'terrain')]
@@ -54,47 +55,49 @@ class Terrain
     public function __construct()
     {
         $this->Location = new ArrayCollection();
+        $this->date_creation = new \DateTime(); // Initialise avec la date actuelle
     }
 
     public function getId(): ?int { return $this->id; }
-    
     public function getDescription(): ?string { return $this->description; }
     public function setDescription(string $description): static { $this->description = $description; return $this; }
-
     public function getSuperficie(): ?float { return $this->superficie; }
     public function setSuperficie(float $superficie): static { $this->superficie = $superficie; return $this; }
-
-    public function getLocalisation(): ?string { return $this->localisation; }
-    public function setLocalisation(string $localisation): static { $this->localisation = $localisation; return $this; }
-
+    public function getLatitude(): ?float { return $this->latitude; }
+    public function setLatitude(?float $latitude): static { $this->latitude = $latitude; return $this; }
+    public function getLongitude(): ?float { return $this->longitude; }
+    public function setLongitude(?float $longitude): static { $this->longitude = $longitude; return $this; }
     public function getPrixLocation(): ?float { return $this->prix_location; }
     public function setPrixLocation(float $prix_location): static { $this->prix_location = $prix_location; return $this; }
-
     public function isDisponibilite(): ?bool { return $this->disponibilite; }
     public function setDisponibilite(bool $disponibilite): static { $this->disponibilite = $disponibilite; return $this; }
-
     public function getDateCreation(): ?\DateTimeInterface { return $this->date_creation; }
-    public function setDateCreation(\DateTimeInterface $date_creation): static { $this->date_creation = $date_creation; return $this; }
-
+    public function setDateCreation(?\DateTimeInterface $date_creation = null): static
+    {
+        // Si aucune date n'est fournie, utilise la date actuelle
+        if ($date_creation === null) {
+            $this->date_creation = new \DateTime();
+        } else {
+            $this->date_creation = $date_creation;
+        }
+        return $this;
+    }
     public function getUtilisateur(): ?Utilisateur { return $this->utilisateur; }
     public function setUtilisateur(?Utilisateur $utilisateur): static { $this->utilisateur = $utilisateur; return $this; }
-
     public function getLocation(): Collection { return $this->Location; }
-    
     public function addLocation(Location $location): static { 
         if (!$this->Location->contains($location)) {
             $this->Location->add($location);
             $location->setTerrain($this);
         }
-        return $this;
+        return $this; 
     }
-
     public function removeLocation(Location $location): static {
         if ($this->Location->removeElement($location)) {
             if ($location->getTerrain() === $this) {
                 $location->setTerrain(null);
             }
         }
-        return $this;
+        return $this; 
     }
 }

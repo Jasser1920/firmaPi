@@ -1,38 +1,88 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Location{% endblock %}
+{% block title %}Détails de la Location{% endblock %}
 
 {% block body %}
-    <h1>Location</h1>
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card p-4 rounded shadow-lg">
+                    <div class="card-body">
+                        <h1 class="text-center mb-4">Détails de la Location</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ location.id }}</td>
-            </tr>
-            <tr>
-                <th>Date_debut</th>
-                <td>{{ location.dateDebut ? location.dateDebut|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Date_fin</th>
-                <td>{{ location.dateFin ? location.dateFin|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Prix_total</th>
-                <td>{{ location.prixTotal }}</td>
-            </tr>
-            <tr>
-                <th>Mode_paiement</th>
-                <td>{{ location.modePaiement }}</td>
-            </tr>
-        </tbody>
-    </table>
+                        {% for message in app.flashes('success') %}
+                            <div class="alert alert-success">{{ message }}</div>
+                        {% endfor %}
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% endfor %}
 
-    <a href="{{ path('app_location_index') }}">back to list</a>
+                        <!-- Mode Affichage -->
+                        <div id="view-mode">
+                            <p><strong>Terrain :</strong> <span>{{ location.terrain.description }}</span></p>
+                            <p><strong>Date de début :</strong> <span>{{ location.dateDebut ? location.dateDebut|date('Y-m-d') : 'Non spécifié' }}</span></p>
+                            <p><strong>Date de fin :</strong> <span>{{ location.dateFin ? location.dateFin|date('Y-m-d') : 'Non spécifié' }}</span></p>
+                            <p><strong>Prix total :</strong> <span>{{ location.prixTotal }} DT</span></p>
+                            <p><strong>Mode de paiement :</strong> <span>{{ location.modePaiement ?: 'Non spécifié' }}</span></p>
+                        </div>
 
-    <a href="{{ path('app_location_edit', {'id': location.id}) }}">edit</a>
+                        <!-- Mode Édition -->
+                        <form id="edit-form" method="post" action="{{ path('app_location_show', {'id': location.id}) }}" class="d-none">
+                            {{ form_start(form) }}
+                            <div class="mb-3">
+                                {{ form_label(form.terrain, 'Terrain') }}
+                                {{ form_widget(form.terrain, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(form.dateDebut, 'Date de début') }}
+                                {{ form_widget(form.dateDebut, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(form.dateFin, 'Date de fin') }}
+                                {{ form_widget(form.dateFin, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(form.prixTotal, 'Prix total') }}
+                                {{ form_widget(form.prixTotal, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(form.modePaiement, 'Mode de paiement') }}
+                                {{ form_widget(form.modePaiement, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <button type="submit" class="btn btn-success">Sauvegarder</button>
+                            {{ form_end(form) }}
+                        </form>
 
-    {{ include('location/_delete_form.html.twig') }}
+                        <!-- Boutons -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('app_location_index') }}" class="btn btn-primary">Retour</a>
+                            <button id="edit-button" class="btn btn-warning">Modifier</button>
+
+                            <!-- Formulaire de suppression -->
+                            <form id="delete-form" method="post" action="{{ path('app_location_delete', {'id': location.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette location ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ location.id) }}">
+                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editButton = document.getElementById('edit-button');
+            const viewMode = document.getElementById('view-mode');
+            const editForm = document.getElementById('edit-form');
+
+            editButton.addEventListener('click', function () {
+                viewMode.classList.toggle('d-none');
+                editForm.classList.toggle('d-none');
+                editButton.textContent = editForm.classList.contains('d-none') ? 'Modifier' : 'Annuler';
+                editButton.classList.toggle('btn-warning');
+                editButton.classList.toggle('btn-secondary');
+            });
+        });
+    </script>
 {% endblock %}

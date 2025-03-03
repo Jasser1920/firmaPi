@@ -1,15 +1,146 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Terrain{% endblock %}
+{% block title %}Nouveau Terrain{% endblock %}
+
+{% block page_header_title %}Ajouter un Terrain{% endblock %}
+{% block page_header_active %}Ajouter{% endblock %}
 
 {% block body %}
-<div class="login-container">
-        <div class="login-box-produit-add" >
-    <h1>Create new Terrain</h1>
-
-    {{ include('terrain/_form.html.twig') }}
-
-    <a href="{{ path('app_terrain_index') }}">back to list</a>
+<div class="container-fluid fruite py-5" style="background: linear-gradient(135deg, #2ecc71, #1e3c72);">
+    <div class="container py-5">
+        <h1 class="mb-4 text-white">Créer un nouveau terrain</h1>
+        <div class="row g-4" id="layout-container">
+            <div class="col-12">
+                <div id="map" style="height: 90vh; width: 100%; max-width: 100%;"></div>
+            </div>
+        </div>
     </div>
+</div>
+
+<div class="container-fluid" style="display: none;" id="form-layout">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div id="map-adjusted" style="height: 90vh; width: 100%; max-width: 100%;"></div>
+            </div>
+            <div class="col-lg-4">
+                <div id="form-container">
+                    <div class="card p-4 shadow-lg rounded" style="background: rgba(255, 255, 255, 0.9); border-radius: 15px;">
+                        <h2 class="card-title mb-4 text-center text-dark">Détails du terrain</h2>
+                        
+                        {# Afficher les messages flash #}
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label == 'success' ? 'success' : 'danger' }}" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        {# Afficher les erreurs globales du formulaire #}
+                        {% if form.vars.errors|length > 0 %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for error in form.vars.errors %}
+                                        <li>{{ error.message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        {{ form_start(form) }}
+                        <div class="mb-3 text-dark">
+                            {{ form_label(form.description, 'Description du terrain', {'label_attr': {'class': 'text-dark'}}) }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control bg-white border-0', 'placeholder': 'Entrez la description du terrain'}}) }}
+                            {{ form_errors(form.description) }} {# Afficher les erreurs spécifiques #}
+                        </div>
+                        <div class="mb-3 text-dark">
+                            {{ form_label(form.superficie, 'Superficie (m²)', {'label_attr': {'class': 'text-dark'}}) }}
+                            {{ form_widget(form.superficie, {'attr': {'class': 'form-control bg-white border-0', 'placeholder': 'Entrez la superficie'}}) }}
+                            {{ form_errors(form.superficie) }}
+                        </div>
+                        <div class="mb-3 text-dark">
+                            {{ form_label(form.latitude, 'Latitude', {'label_attr': {'class': 'text-dark'}}) }}
+                            {{ form_widget(form.latitude, {'attr': {'class': 'form-control bg-white border-0', 'readonly': true}}) }}
+                            {{ form_errors(form.latitude) }}
+                        </div>
+                        <div class="mb-3 text-dark">
+                            {{ form_label(form.longitude, 'Longitude', {'label_attr': {'class': 'text-dark'}}) }}
+                            {{ form_widget(form.longitude, {'attr': {'class': 'form-control bg-white border-0', 'readonly': true}}) }}
+                            {{ form_errors(form.longitude) }}
+                        </div>
+                        <div class="mb-3 text-dark">
+                            {{ form_label(form.prix_location, 'Prix de location (DT)', {'label_attr': {'class': 'text-dark'}}) }}
+                            {{ form_widget(form.prix_location, {'attr': {'class': 'form-control bg-white border-0', 'placeholder': 'Entrez le prix de location'}}) }}
+                            {{ form_errors(form.prix_location) }}
+                        </div>
+                        <div class="mb-3 text-dark">
+                            {{ form_label(form.disponibilite, 'Disponible ?', {'label_attr': {'class': 'text-dark'}}) }}
+                            {{ form_widget(form.disponibilite, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_errors(form.disponibilite) }}
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-warning px-4 py-2 rounded-pill text-white" style="background-color: #ff8c00;">Sauvegarder</button>
+                        </div>
+                        {{ form_end(form) }}
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_terrain_index') }}" class="btn btn-success rounded-pill px-4 py-2">Retour à la liste</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    let map;
+    let marker;
+
+    function initMap() {
+        map = L.map('map').setView([34.0209, 9.5534], 6); // Centre sur la Tunisie
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        map.on('click', function(event) {
+            placeMarker(event.latlng);
+            adjustLayout(event.latlng);
+        });
+    }
+
+    function placeMarker(location) {
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker(location).addTo(map);
+    }
+
+    function adjustLayout(location) {
+        document.getElementById('layout-container').style.display = 'none';
+        document.getElementById('form-layout').style.display = 'block';
+
+        if (map) {
+            map.remove();
+        }
+        map = L.map('map-adjusted').setView([location.lat, location.lng], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        placeMarker(location);
+
+        document.getElementById('terrain_latitude').value = location.lat;
+        document.getElementById('terrain_longitude').value = location.lng;
+        document.getElementById('form-container').style.display = 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', initMap);
+</script>
 {% endblock %}

@@ -7,7 +7,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -26,10 +25,15 @@ class TerrainType extends AbstractType
                 'attr' => ['placeholder' => 'Entrez la superficie'],
                 'required' => true,
             ])
-            ->add('localisation', TextType::class, [
-                'label' => 'Localisation',
-                'attr' => ['placeholder' => 'Entrez la localisation'],
-                'required' => true,
+            ->add('latitude', NumberType::class, [
+                'label' => 'Latitude',
+                'attr' => ['readonly' => true],
+                'required' => false,
+            ])
+            ->add('longitude', NumberType::class, [
+                'label' => 'Longitude',
+                'attr' => ['readonly' => true],
+                'required' => false,
             ])
             ->add('prix_location', NumberType::class, [
                 'label' => 'Prix de location (DT)',
@@ -39,10 +43,6 @@ class TerrainType extends AbstractType
             ->add('disponibilite', CheckboxType::class, [
                 'label' => 'Disponible ?',
                 'required' => false,
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Enregistrer',
-                'attr' => ['class' => 'btn btn-primary']
             ]);
     }
 
