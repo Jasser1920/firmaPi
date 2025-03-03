@@ -11,6 +11,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use App\Controller\Admin\UtilisateurCrudController;
+use App\Entity\Categorie;
+use App\Entity\Commande;
+use App\Entity\Don;
+use App\Entity\Evenemment;
+use App\Entity\Livraison;
+use App\Entity\Location;
+use App\Entity\Produit;
+use App\Entity\Terrain;
+
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
@@ -48,7 +57,14 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {   yield MenuItem::linkToCrud('Reclamation', 'fa fa-exclamation-triangle', Reclammation::class);
         yield MenuItem::linkToCrud('User', 'fas fa-user', Utilisateur::class);
-     
+        yield MenuItem::linkToCrud('Commande', 'fas fa-user', Commande::class);
+        yield MenuItem::linkToCrud('Livraison', 'fas fa-user', Livraison::class);
+        yield MenuItem::linkToCrud('Terrain', 'fas fa-user', Terrain::class);
+        yield MenuItem::linkToCrud('Location', 'fas fa-user', Location::class);
+        yield MenuItem::linkToCrud('Produit', 'fas fa-user', Produit::class);
+        yield MenuItem::linkToCrud('Categorie', 'fas fa-user', Categorie::class);
+        yield MenuItem::linkToCrud('Evenemment', 'fas fa-user', Evenemment::class);
+        yield MenuItem::linkToCrud('Don', 'fas fa-user', Don::class);
         // Add a logout button to the user menu
    yield MenuItem::section('Account');
    yield MenuItem::linkToLogout('Logout', 'fa fa-sign-out');
