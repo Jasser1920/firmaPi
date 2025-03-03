@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProduitRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 class Produit
@@ -18,9 +19,14 @@ class Produit
     private ?string $nom = null;
 
     #[ORM\Column]
+    #[Assert\Positive(message: "Le prix doit être un nombre positif.")]
     private ?float $prix = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(
+        max: 2000,
+        maxMessage: "La description ne doit pas dépasser 2000 caractères."
+    )]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
@@ -30,6 +36,10 @@ class Produit
     private ?string $quantite = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\GreaterThan(
+        value: "today",
+        message: "La date d'expiration doit être ultérieure à aujourd'hui."
+    )]
     private ?\DateTimeInterface $date_expiration = null;
 
     #[ORM\ManyToOne(inversedBy: 'produits')]

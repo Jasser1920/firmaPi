@@ -6,6 +6,7 @@ use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
 class Categorie
@@ -16,6 +17,10 @@ class Categorie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Choice(
+        choices: ["Fruits", "Légumes", "Céréales", "Fruits secs", "Apiculture","Oeufs", "Produits laitiers", "Viandes", "Volailles","Plantes aromatiques","Plantes médicales", "Champignons","Huiles","Épices"],
+        message: "Le nom de la catégorie doit être parmi : Fruits, Légumes, Céréales, Fruits secs, Apiculture, Oeufs, Produits laitiers, Viande, Volaille, Plantes aromatiques, Plantes médicales, Champignons, Huiles, Épices."
+    )]
     private ?string $nom_categorie = null;
 
     /**

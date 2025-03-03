@@ -1,8 +1,14 @@
 {{ form_start(form) }}
+
+    {# Affichage global des erreurs #}
+    {{ form_errors(form) }}
+
     <div class="form-group">
         {{ form_label(form.nom_categorie) }}
-        {{ form_widget(form.nom_categorie, {'attr': {'class': 'form-control', 'placeholder': 'Enter category name'}}) }}
+        {{ form_widget(form.nom_categorie, {'attr': {'class': 'form-control', 'placeholder' : 'Entrez une catégorie valide'}}) }}
+        {{ form_errors(form.nom_categorie) }} {# Ajout des erreurs ici #}
     </div>
 
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+
 {{ form_end(form) }}
