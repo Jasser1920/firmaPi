@@ -1,45 +1,126 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Location index{% endblock %}
+{% block title %}Liste des Locations{% endblock %}
+
+{% block page_header_title %}Locations{% endblock %}
+{% block page_header_active %}Locations{% endblock %}
 
 {% block body %}
-<div class="login-container">
-        <div class="login-box-produit">
-    <h1>Location index</h1>
+    <div class="container-fluid fruite py-5">
+        <div class="container py-5">
+            <h1 class="mb-4">Liste des locations disponibles</h1>
+            <div class="row g-4">
+                <div class="col-lg-12">
+                    <div class="row g-4">
+                        <div class="col-xl-3">
+                            <div class="input-group w-100 mx-auto d-flex">
+                                <input type="search" class="form-control p-3" placeholder="Rechercher une location" aria-describedby="search-icon-1">
+                                <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-6"></div>
+                        <div class="col-xl-3">
+                            <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
+                                <label for="locations">Trier par :</label>
+                                <select id="locations" name="locationlist" class="border-0 form-select-sm bg-light me-3">
+                                    <option value="none">Aucun</option>
+                                    <option value="price">Prix</option>
+                                    <option value="date">Date</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date_debut</th>
-                <th>Date_fin</th>
-                <th>Prix_total</th>
-                <th>Mode_paiement</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for location in locations %}
-            <tr>
-                <td>{{ location.id }}</td>
-                <td>{{ location.dateDebut ? location.dateDebut|date('Y-m-d') : '' }}</td>
-                <td>{{ location.dateFin ? location.dateFin|date('Y-m-d') : '' }}</td>
-                <td>{{ location.prixTotal }}</td>
-                <td>{{ location.modePaiement }}</td>
-                <td>
-                    <a href="{{ path('app_location_show', {'id': location.id}) }}">show</a>
-                    <a href="{{ path('app_location_edit', {'id': location.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                    <div class="row g-4">
+                        <div class="col-lg-3">
+                            <div class="row g-4">
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <h4>Catégories</h4>
+                                        <ul class="list-unstyled fruite-categorie">
+                                            <li>
+                                                <div class="d-flex justify-content-between fruite-name">
+                                                    <a href="#"><i class="fas fa-home me-2"></i>Locations actives</a>
+                                                    <span>({{ locations|length }})</span>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex justify-content-between fruite-name">
+                                                    <a href="#"><i class="fas fa-home me-2"></i>Locations terminées</a>
+                                                    <span>(0)</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <h4>Prix</h4>
+                                        <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="10000" value="0" oninput="amount.value=rangeInput.value">
+                                        <output id="amount" name="amount" min-value="0" max-value="10000" for="rangeInput">0</output> DT
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-    <a href="{{ path('app_location_new') }}">Create new</a>
+                        <div class="col-lg-9">
+                            <div class="row g-4 justify-content-center">
+                                {% for location in locations %}
+                                    <div class="col-md-6 col-lg-6 col-xl-4">
+                                        <div class="rounded position-relative fruite-item" style="min-height: 300px; max-height: 350px;">
+                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom d-flex flex-column justify-content-between" style="height: 100%;">
+                                                <div>
+                                                    <h4 class="mb-3">Location #{{ location.id }}</h4>
+                                                    <p class="mb-3">Date début : {{ location.dateDebut ? location.dateDebut|date('Y-m-d') : 'Non spécifiée' }}</p>
+                                                    <p class="mb-3">Date fin : {{ location.dateFin ? location.dateFin|date('Y-m-d') : 'Non spécifiée' }}</p>
+                                                    <p class="mb-3">Prix total : {{ location.prixTotal }} DT</p>
+                                                    <p class="text-dark fs-5 fw-bold mb-3">Mode de Paiement : {{ location.modePaiement ?: 'Non spécifié' }}</p>
+                                                </div>
+                                                <div>
+                                                    <div class="d-flex justify-content-between mb-3">
+                                                        <a href="{{ path('app_location_show', {'id': location.id}) }}" class="btn btn-info">Voir</a>
+                                                    </div>
+                                                    <small class="text-muted">Créé le : {{ location.dateDebut ? location.dateDebut|date('Y-m-d') : '' }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-12">
+                                        <p class="text-center">Aucune location trouvée</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-12">
+                                <div class="pagination d-flex justify-content-center mt-5">
+                                    <a href="#" class="rounded">«</a>
+                                    <a href="#" class="active rounded">1</a>
+                                    <a href="#" class="rounded">2</a>
+                                    <a href="#" class="rounded">3</a>
+                                    <a href="#" class="rounded">4</a>
+                                    <a href="#" class="rounded">5</a>
+                                    <a href="#" class="rounded">6</a>
+                                    <a href="#" class="rounded">»</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ path('app_location_new') }}" class="btn border border-secondary rounded-pill px-3 text-primary mt-3">Créer une nouvelle location</a>
+                </div>
+            </div>
+        </div>
     </div>
-    </div>
+
+    <style>
+        .fruite-item {
+            border: 1px solid #dee2e6;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .fruite-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 {% endblock %}
