@@ -1,15 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Categorie{% endblock %}
+{% block title %}New Category{% endblock %}
 
 {% block body %}
-    <div class="login-container">
-        <div class="login-box-produit-add" >
-            <h1>Create new Categorie</h1>
+    <!-- Page Header -->
+    <div class="container-fluid page-header py-5 bg-dark">
+        <h1 class="text-center text-white display-4 fw-bold">Create New Category</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_categorie_index') }}" class="text-white">Categories</a></li>
+            <li class="breadcrumb-item active text-white">New</li>
+        </ol>
+    </div>
 
-            {{ include('categorie/_form.html.twig') }}
-
-            <a href="{{ path('app_categorie_index') }}" class="back-link">Back to list</a>
+    <!-- Category Form -->
+    <div class="container-fluid py-5 bg-light">
+        <div class="container py-5">
+            <div class="card shadow-sm border-0 p-4">
+                <h4 class="text-primary mb-4">Add a New Category</h4>
+                {{ form_start(form) }}
+                    <div class="mb-3">
+                        {{ form_label(form.nom_categorie, 'Category Name', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.nom_categorie, {'attr': {'class': 'form-control rounded-pill', 'placeholder': 'Enter category name'}}) }}
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm rounded-pill">
+                            <i class="bi bi-save me-1"></i>Save
+                        </button>
+                        <a href="{{ path('app_categorie_index') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+                            <i class="bi bi-arrow-left me-1"></i>Cancel
+                        </a>
+                    </div>
+                {{ form_end(form) }}
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -1,126 +1,176 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Produits{% endblock %}
+{% block title %} Liste des Produits {% endblock %}
 
 {% block body %}
     <!-- Single Page Header start -->
-    <div class="container-fluid page-header py-5">
-        <h1 class="text-center text-white display-6">Shop</h1>
+    <div class="container-fluid page-header py-5 bg-dark">
+        <h1 class="text-center text-white display-4 fw-bold">Boutique</h1>
         <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item"><a href="#">Pages</a></li>
-            <li class="breadcrumb-item active text-white">Shop</li>
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="#" class="text-white">Pages</a></li>
+            <li class="breadcrumb-item active text-white">Boutique</li>
         </ol>
     </div>
     <!-- Single Page Header End -->
 
-    <!-- Fruits Shop Start -->
-    <div class="container-fluid fruite py-5">
+    <!-- Products Start -->
+    <div class="container-fluid py-5 bg-light">
         <div class="container py-5">
-            <h1 class="mb-4">Liste des Produits</h1>
+            <div class="text-center mb-5">
+                <h4 class="text-primary text-uppercase letter-spacing-2">Produits</h4>
+                <h1 class="display-5 fw-bold text-dark mb-4">Liste des Produits</h1>
+            </div>
+
             <div class="row g-4">
-                <div class="col-lg-12">
-                    <div class="row g-4">
-                        <div class="col-xl-3">
-                            <div class="input-group w-100 mx-auto d-flex">
-                                <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                                <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                <div class="col-lg-3">
+                    <!-- Search -->
+                    <div class="card shadow-sm border-0 p-4 mb-4">
+                        <h4 class="text-primary mb-3">Rechercher</h4>
+                        <form action="{{ path('app_produit_index') }}" method="get">
+                            <div class="input-group">
+                                <input type="search" name="search" class="form-control rounded-pill" 
+                                       placeholder="Rechercher par nom" value="{{ search|default('') }}">
+                                <button type="submit" class="input-group-text bg-primary text-white border-0">
+                                    <i class="fa fa-search"></i>
+                                </button>
                             </div>
-                        </div>
-                        <div class="col-6"></div>
-                        <div class="col-xl-3">
-                            <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
-                                <label for="fruits">Default Sorting:</label>
-                                <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3" form="fruitform">
-                                    <option value="volvo">Nothing</option>
-                                    <option value="saab">Popularity</option>
-                                    <option value="opel">Organic</option>
-                                    <option value="audi">Fantastic</option>
-                                </select>
-                            </div>
-                        </div>
+                        </form>
                     </div>
-                    <div class="row g-4">
-                        <div class="col-lg-3">
-                            <!-- Sidebar content (Categories, Price, etc.) -->
-                            <div class="row g-4">
-                                
-                                </div>
-                                <!-- Price Filter -->
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <h4 class="mb-2">Price</h4>
-                                        <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="amount.value=rangeInput.value">
-                                        <output id="amount" name="amount" min-value="0" max-value="500" for="rangeInput">0</output>
-                                    </div>
-                                </div>
-                                <!-- Additional Filters -->
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <h4>Additional</h4>
-                                        <div class="mb-2">
-                                            <input type="radio" class="me-2" id="Categories-1" name="Categories-1" value="Organic">
-                                            <label for="Categories-1">Organic</label>
-                                        </div>
-                                        <div class="mb-2">
-                                            <input type="radio" class="me-2" id="Categories-2" name="Categories-1" value="Fresh">
-                                            <label for="Categories-2">Fresh</label>
-                                        </div>
-                                    </div>
-                                </div>
+
+                    <!-- Price Filter -->
+                    <div class="card shadow-sm border-0 p-4 mb-4">
+                        <h4 class="text-primary mb-3">Filtrer par Prix</h4>
+                        <form action="{{ path('app_produit_index') }}" method="get">
+                            <input type="hidden" name="search" value="{{ search|default('') }}">
+                            <input type="hidden" name="sort" value="{{ sort|default('') }}">
+                            <div class="mb-3">
+                                <label for="priceRange" class="form-label">Prix maximum :</label>
+                                <input type="range" class="form-range" id="priceRange" name="max_price" 
+                                       min="0" max="500" value="{{ max_price|default(500) }}" 
+                                       onchange="priceOutput.value=priceRange.value">
+                                <output id="priceOutput" for="priceRange" class="text-muted">{{ max_price|default(500) }}</output> €
                             </div>
-                        </div>
-                        <div class="col-lg-9">
-                            <div class="row g-4 justify-content-center">
-                                {% for produit in produits %}
-                                    <div class="col-md-6 col-lg-6 col-xl-4">
-                                        <div class="rounded position-relative fruite-item">
-                                            <div class="fruite-img">
-                                                {% if produit.image %}
-                                                    <img src="{{ produit.image }}" class="img-fluid w-100 rounded-top" alt="{{ produit.nom }}">
-                                                {% else %}
-                                                    <img src="img/default-product.jpg" class="img-fluid w-100 rounded-top" alt="No image">
-                                                {% endif %}
-                                            </div>
-                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">
-                                                {{ produit.categorie ? produit.categorie.nomCategorie : 'Aucune' }}
-                                            </div>
-                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                <h4>{{ produit.nom }}</h4>
-                                                <p>{{ produit.description }}</p>
-                                                <div class="d-flex justify-content-between flex-lg-wrap">
-                                                    <p class="text-dark fs-5 fw-bold mb-0">{{ produit.prix }} €</p>
-                                                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn border border-secondary rounded-pill px-3 text-primary">
-                                                        <i class="fa fa-shopping-bag me-2 text-primary"></i> Voir
-                                                    </a>
-                                                </div>
-                                                <div class="mt-2">
-                                                    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% else %}
-                                    <div class="col-12">
-                                        <p class="text-center">Aucun produit trouvé</p>
-                                    </div>
-                                {% endfor %}
-                                <div class="col-12">
-                                    <div class="pagination d-flex justify-content-center mt-5">
-                                        <a href="#" class="rounded">«</a>
-                                        <a href="#" class="active rounded">1</a>
-                                        <a href="#" class="rounded">2</a>
-                                        <a href="#" class="rounded">3</a>
-                                        <a href="#" class="rounded">»</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill w-100">Appliquer</button>
+                        </form>
                     </div>
                 </div>
+
+                <div class="col-lg-9">
+                    <!-- Sorting -->
+                    <div class="card shadow-sm border-0 p-4 mb-4">
+                        <form action="{{ path('app_produit_index') }}" method="get" class="d-flex justify-content-between align-items-center">
+                            <input type="hidden" name="search" value="{{ search|default('') }}">
+                            <input type="hidden" name="max_price" value="{{ max_price|default(500) }}">
+                            <h4 class="text-primary mb-0">Trier par :</h4>
+                            <select class="form-select w-50 rounded-pill" name="sort" onchange="this.form.submit()">
+                                <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Prix croissant</option>
+                                <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Prix décroissant</option>
+                                <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>Nom (A-Z)</option>
+                                <option value="name_desc" {% if sort == 'name_desc' %}selected{% endif %}>Nom (Z-A)</option>
+                            </select>
+                        </form>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="row g-4">
+                        {% for produit in produits %}
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card product-card shadow-sm border-0 h-100">
+                                    <div class="position-relative">
+                                        {% if produit.image %}
+                                            <img src="{{ produit.image }}" class="card-img-top rounded-top" alt="{{ produit.nom }}">
+                                        {% else %}
+                                            <img src="{{ asset('img/default-product.jpg') }}" class="card-img-top rounded-top" alt="Produit par défaut">
+                                        {% endif %}
+                                        <span class="badge bg-primary position-absolute top-0 start-0 m-3">
+                                            {{ produit.categorie ? produit.categorie.nomCategorie : 'Aucune' }}
+                                        </span>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <h5 class="card-title fw-bold text-primary">{{ produit.nom }}</h5>
+                                        <p class="card-text text-muted">
+                                            {% if produit.description|length > 100 %}
+                                                {{ produit.description|slice(0, 100) }}...
+                                            {% else %}
+                                                {{ produit.description }}
+                                            {% endif %}
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="text-dark fs-5 fw-bold">{{ produit.prix }} €</span>
+                                            <small class="text-muted"><i class="bi bi-box-seam me-1"></i>{{ produit.quantite }} en stock</small>
+                                        </div>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            {% if produit.id is defined and produit.id is not null %}
+                                                <a href="{{ path('app_produit_show', {'id': produit.id}) }}" 
+                                                class="btn btn-outline-primary btn-sm rounded-pill">
+                                                    <i class="fa fa-eye me-1"></i>Voir
+                                                </a>
+                                            {% endif %}
+                                            {% if is_granted('ROLE_client') %} 
+                                            <a href="{{ path('app_cart_add', {'id': produit.id}) }}" 
+                                               class="btn btn-outline-success btn-sm rounded-pill">
+                                                <i class="fa fa-shopping-cart me-1"></i>Ajouter au panier
+                                            </a>
+                                            {% endif %}
+                                            {% if is_granted('ROLE_agriculture') %} 
+                                            <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" 
+                                               class="btn btn-outline-warning btn-sm rounded-pill">
+                                                <i class="bi bi-pencil me-1"></i>Modifier
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-12">
+                                <div class="alert alert-info text-center" role="alert">
+                                    Aucun produit trouvé
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <!-- Pagination -->
+                    <div class="col-12 mt-5">
+                        <div class="pagination d-flex justify-content-center">
+                            <a href="#" class="rounded {% if current_page <= 1 %}disabled{% endif %}">«</a>
+                            {% for page in 1..total_pages %}
+                                <a href="{{ path('app_produit_index', {'page': page, 'search': search|default(''), 'max_price': max_price|default(500), 'sort': sort|default('')}) }}" 
+                                   class="rounded {% if page == current_page %}active{% endif %}">{{ page }}</a>
+                            {% endfor %}
+                            <a href="#" class="rounded {% if current_page >= total_pages %}disabled{% endif %}">»</a>
+                        </div>
+                    </div>
+                     {% if is_granted('ROLE_agriculture') %} 
+                    <div class="col-12 text-center mt-4">
+                        <a href="{{ path('app_produit_new') }}" 
+                           class="btn btn-primary btn-lg rounded-pill px-5 py-3">
+                            <i class="bi bi-plus-circle me-2"></i>Créer un nouveau produit
+                        </a>
+                    </div>
+                     {% endif %}
+                </div>
             </div>
-            <a href="{{ path('app_produit_new') }}" class="btn btn-success">Créer un nouveau produit</a>
         </div>
     </div>
-    <!-- Fruits Shop End -->
+    <!-- Products End -->
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .product-card {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+        
+        .letter-spacing-2 {
+            letter-spacing: 2px;
+        }
+    </style>
 {% endblock %}

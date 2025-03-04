@@ -69,8 +69,8 @@ class ReclammationCrudController extends AbstractCrudController
     #[Route('/admin/reclamation/{id}/reply', name: 'admin_reclamation_reply')]
     public function replyReclamation(Request $request, EntityManagerInterface $entityManager, ReclammationRepository $reclammationRepository, int $id): Response
     {
-        $reclamation = $reclammationRepository->find($id);
 
+        $reclamation = $reclammationRepository->find($id);
         if (!$reclamation) {
             $this->addFlash('danger', 'Reclamation not found!');
             return $this->redirectToRoute('admin_dashboard', ['entity' => 'Reclammation', 'action' => 'index']);

@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Utilisateur;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class ProfiledetailsController extends AbstractController
 {
@@ -20,10 +21,8 @@ final class ProfiledetailsController extends AbstractController
     }
 
     #[Route('/profile/delete', name: 'app_profile_delete', methods: ['DELETE'])]
-    public function deleteProfile(
-        Request $request,
-        EntityManagerInterface $entityManager
-    ): Response {
+    public function deleteProfile(Request $request, EntityManagerInterface $entityManager): Response
+    {
         /** @var Utilisateur|null $user */
         $user = $this->getUser();
         if (!$user) {
@@ -36,15 +35,34 @@ final class ProfiledetailsController extends AbstractController
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
-        // Logout the user before deleting the account
-        $this->container->get('security.token_storage')->setToken(null);
-        $request->getSession()->invalidate();
+        // Remove related entities (lazy loading is triggered by iteration)
+        foreach ($user->getEvenement()->toArray() as $evenement) {
+            $entityManager->remove($evenement);
+        }
+        foreach ($user->getDons()->toArray() as $don) {
+            $entityManager->remove($don);
+        }
+        foreach ($user->getReclamation()->toArray() as $reclamation) {
+            $entityManager->remove($reclamation);
+        }
+        foreach ($user->getTerrain()->toArray() as $terrain) {
+            $entityManager->remove($terrain);
+        }
+        foreach ($user->getProduit()->toArray() as $produit) {
+            $entityManager->remove($produit);
+        }
 
-        // Remove the user from the database
+        // Flush to delete related entities first
+        $entityManager->flush();
+
+        // Now delete the user
         $entityManager->remove($user);
         $entityManager->flush();
 
-        // Add a flash message and redirect to the homepage
+        // Logout the user
+        $this->container->get('security.token_storage')->setToken(null);
+        $request->getSession()->invalidate();
+
         $this->addFlash('success', 'Your account has been deleted successfully.');
         return $this->redirectToRoute('app_home');
     }

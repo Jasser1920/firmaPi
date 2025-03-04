@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Évènements{% endblock %}
+
 {% block stylesheets %}
+    {{ parent() }}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet">
@@ -12,117 +14,178 @@
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style_event.css') }}" rel="stylesheet">
+    <style>
+        .event-card {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+        
+        .letter-spacing-2 {
+            letter-spacing: 2px;
+        }
+    </style>
 {% endblock %}
+
 {% block body %}
-    <div class="container-fluid page-header py-5">
-        <h1 class="text-center text-white display-6">Évènements</h1>
+    <!-- Single Page Header start -->
+    <div class="container-fluid page-header py-5 bg-dark">
+        <h1 class="text-center text-white display-4 fw-bold">Évènements</h1>
         <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white">Accueil</a></li>
             <li class="breadcrumb-item active text-white">Évènements</li>
         </ol>
     </div>
-    <div class="container-fluid fruite py-5">
+    <!-- Single Page Header End -->
+
+    <!-- Events Start -->
+    <div class="container-fluid py-5 bg-light">
         <div class="container py-5">
-            <h1 class="mb-4">Liste des Évènements</h1>
+            <div class="text-center mb-5">
+                <h4 class="text-primary text-uppercase letter-spacing-2">Évènements</h4>
+                <h1 class="display-5 fw-bold text-dark mb-4">Découvrez Nos Évènements</h1>
+            </div>
+
             <div class="row g-4">
-                <div class="col-lg-12">
-                    <div class="row g-4">
-                        <div class="col-xl-3">
-                            <div class="input-group w-100 mx-auto d-flex">
-                                <input type="search" class="form-control p-3" placeholder="Rechercher un évènement" aria-describedby="search-icon-1">
-                                <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                <div class="col-lg-3">
+                    <!-- Search -->
+                    <div class="card shadow-sm border-0 p-4 mb-4">
+                        <h4 class="text-primary mb-3">Rechercher</h4>
+                        <form action="{{ path('app_evenemment_index') }}" method="get">
+                            <div class="input-group">
+                                <input type="search" name="search" class="form-control rounded-pill" 
+                                       placeholder="Rechercher un évènement" value="{{ search }}">
+                                <button type="submit" class="input-group-text bg-primary text-white border-0">
+                                    <i class="fa fa-search"></i>
+                                </button>
                             </div>
-                        </div>
-                        <div class="col-6"></div>
-                        <div class="col-xl-3">
-                            <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
-                                <label for="events">Trier par :</label>
-                                <select id="events" name="eventlist" class="border-0 form-select-sm bg-light me-3" form="eventform">
-                                    <option value="nothing">Rien</option>
-                                    <option value="date">Date</option>
-                                    <option value="location">Lieu</option>
-                                    <option value="title">Titre</option>
-                                </select>
-                            </div>
-                        </div>
+                        </form>
                     </div>
-                    <div class="row g-4">
-                        <div class="col-lg-3">
-                            <div class="row g-4">
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <h4>Catégories</h4>
-                                        <ul class="list-unstyled fruite-categorie">
-                                            <li><div class="d-flex justify-content-between fruite-name"><a href="#"><i class="fas fa-calendar-alt me-2"></i>Prochains</a><span>(5)</span></div></li>
-                                            <li><div class="d-flex justify-content-between fruite-name"><a href="#"><i class="fas fa-calendar-alt me-2"></i>Passés</a><span>(3)</span></div></li>
-                                            <li><div class="d-flex justify-content-between fruite-name"><a href="#"><i class="fas fa-calendar-alt me-2"></i>En cours</a><span>(2)</span></div></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <h4>Filtrer par date</h4>
-                                        <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="365" value="0" oninput="amount.value=rangeInput.value">
-                                        <output id="amount" name="amount" min-value="0" max-value="365" for="rangeInput">0</output>
-                                    </div>
-                                </div>
+
+                    <!-- Date Filter -->
+                    <div class="card shadow-sm border-0 p-4 mb-4">
+                        <h4 class="text-primary mb-3">Filtrer par Date</h4>
+                        <form action="{{ path('app_evenemment_index') }}" method="get">
+                            <input type="hidden" name="search" value="{{ search }}">
+                            <input type="hidden" name="sort" value="{{ sort }}">
+                            <div class="mb-3">
+                                <label for="daysRange" class="form-label">Jours à venir:</label>
+                                <input type="range" class="form-range" id="daysRange" name="days" 
+                                       min="0" max="90" value="{{ days }}" 
+                                       oninput="daysOutput.value=daysRange.value">
+                                <output id="daysOutput" for="daysRange" class="text-muted">{{ days }}</output> jours
                             </div>
-                        </div>
-                        <div class="col-lg-9">
-                            <div class="row g-4 justify-content-center">
-                                {% if evenemments is not empty %}
-                                    {% for evenemment in evenemments %}
-                                        <div class="col-md-6 col-lg-6 col-xl-4">
-                                            <div class="rounded position-relative fruite-item" style="height: 100%;">
-                                                <div class="fruite-img">
-                                                    {% if evenemment.image %}
-                                                        <img src="{{ evenemment.image }}" class="img-fluid w-100 rounded-top" alt="{{ evenemment.titre }}">
+                            <div class="d-grid gap-2">
+                                <button type="submit" name="days" value="7" class="btn btn-outline-primary btn-sm rounded-pill">
+                                    Semaine prochaine
+                                </button>
+                                <button type="submit" name="days" value="30" class="btn btn-outline-primary btn-sm rounded-pill">
+                                    Mois prochain
+                                </button>
+                                <button type="submit" name="days" value="0" class="btn btn-outline-secondary btn-sm rounded-pill">
+                                    Réinitialiser
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-lg-9">
+                    <!-- Sorting -->
+                    <div class="card shadow-sm border-0 p-4 mb-4">
+                        <form action="{{ path('app_evenemment_index') }}" method="get" class="d-flex justify-content-between align-items-center">
+                            <input type="hidden" name="search" value="{{ search }}">
+                            <input type="hidden" name="days" value="{{ days }}">
+                            <h4 class="text-primary mb-0">Trier par :</h4>
+                            <select class="form-select w-50 rounded-pill" name="sort" onchange="this.form.submit()">
+                                <option value="date" {{ sort == 'date' ? 'selected' : '' }}>Date</option>
+                                <option value="location" {{ sort == 'location' ? 'selected' : '' }}>Lieu</option>
+                                <option value="title" {{ sort == 'title' ? 'selected' : '' }}>Titre</option>
+                            </select>
+                        </form>
+                    </div>
+
+                    <!-- Events Grid -->
+                    <div class="row g-4">
+                        {% if evenemments is not empty %}
+                            {% for evenemment in evenemments %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card event-card shadow-sm border-0 h-100">
+                                        <div class="position-relative">
+                                        
+                                            {% if evenemment.image %}
+                                                <img src="{{evenemment.image}}" class="card-img-top rounded-top" alt="{{ evenemment.titre }}">
+                                            {% else %}
+                                                <img src="{{ asset('img/default-event.jpg') }}" class="card-img-top rounded-top" alt="Default Event">
+                                            {% endif %}
+                                            <span class="badge bg-primary position-absolute top-0 start-0 m-3">Évènement</span>
+                                        </div>
+                                        <div class="card-body p-4">
+                                            <h5 class="card-title fw-bold text-primary">{{ evenemment.titre }}</h5>
+                                            <p class="card-text text-muted">
+                                                {% if evenemment.desecription|length > 100 %}
+                                                    {{ evenemment.desecription|slice(0, 100) }}...
+                                                {% else %}
+                                                    {{ evenemment.desecription }}
+                                                {% endif %}
+                                            </p>
+                                            <div class="d-flex justify-content-between mb-3">
+                                                <small class="text-muted"><i class="bi bi-calendar me-1"></i>{{ evenemment.date ? evenemment.date|date('Y-m-d') : '' }}</small>
+                                                <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>{{ evenemment.lieux }}</small>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <a href="{{ path('app_evenemment_show', {'id': evenemment.id}) }}" 
+                                                   class="btn btn-outline-primary btn-sm rounded-pill">
+                                                    <i class="fa fa-info-circle me-1"></i>Détails
+                                                </a>
+                                                <a href="{{ path('app_evenemment_qr', {'id': evenemment.id}) }}" 
+                                                   class="btn btn-outline-primary btn-sm rounded-pill">
+                                                    <i class="fa fa-qrcode me-1"></i>QR Code
+                                                </a>
+                                                {% if is_granted('ROLE_agriculture') or is_granted('ROLE_client') %}
+                                                    {% set hasParticipated = evenemment.participations|filter(p => p.user == app.user)|length > 0 %}
+                                                    {% if hasParticipated %}
+                                                        <a href="{{ path('app_don_new', {'eventId': evenemment.id}) }}" 
+                                                           class="btn btn-outline-success btn-sm rounded-pill">
+                                                            <i class="fa fa-donate me-1"></i>Donner
+                                                        </a>
                                                     {% else %}
-                                                        <img src="img/default-event.jpg" class="img-fluid w-100 rounded-top" alt="Default Event Image">
+                                                        <form method="post" action="{{ path('app_evenemment_participate', {'id': evenemment.id}) }}" class="d-inline">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('participate' ~ evenemment.id) }}">
+                                                            <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+                                                                <i class="fa fa-check me-1"></i>Participer
+                                                            </button>
+                                                        </form>
                                                     {% endif %}
-                                                </div>
-                                                <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Évènement</div>
-                                                <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                    <h4>{{ evenemment.titre }}</h4>
-                                                    <p>{{ evenemment.desecription }}</p>
-                                                    <div class="d-flex justify-content-between flex-lg-wrap">
-                                                        <p class="text-dark fs-5 fw-bold mb-0">{{ evenemment.date ? evenemment.date|date('Y-m-d') : '' }}</p>
-                                                        <p class="text-dark fs-5 fw-bold mb-0">{{ evenemment.lieux }}</p>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between flex-lg-wrap mt-3">
-                                                        <a href="{{ path('app_evenemment_show', {'id': evenemment.id}) }}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-info-circle me-2 text-primary"></i> Détails</a>
-                                                        <a href="{{ path('app_evenemment_qr', {'id': evenemment.id}) }}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-qrcode me-2 text-primary"></i> Voir code QR</a>
-                                                        {% if is_granted('ROLE_agriculture') or is_granted('ROLE_client') %}
-                                                            {% set hasParticipated = evenemment.participations|filter(p => p.user == app.user)|length > 0 %}
-                                                            {% if hasParticipated %}
-                                                                <a href="{{ path('app_don_new', {'eventId': evenemment.id}) }}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-donate me-2 text-primary"></i> Donner un don</a>
-                                                            {% else %}
-                                                                <form method="post" action="{{ path('app_evenemment_participate', {'id': evenemment.id}) }}" style="display: inline;">
-                                                                    <input type="hidden" name="_token" value="{{ csrf_token('participate' ~ evenemment.id) }}">
-                                                                    <button type="submit" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-check me-2 text-primary"></i> Participer</button>
-                                                                </form>
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
+                                                {% endif %}
                                             </div>
                                         </div>
-                                    {% endfor %}
-                                {% else %}
-                                    <div class="col-12">
-                                        <p class="text-center">Aucun évènement trouvé.</p>
                                     </div>
-                                {% endif %}
-                            </div>
-                            {% if is_granted('ROLE_association') %}
-                                <div class="d-flex justify-content-center mt-5">
-                                    <a href="{{ path('app_evenemment_new') }}" class="btn border border-secondary px-4 py-3 rounded-pill text-primary">Ajouter un Évènement</a>
                                 </div>
-                            {% endif %}
-                        </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-12">
+                                <div class="alert alert-info text-center" role="alert">
+                                    Aucun évènement trouvé
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if is_granted('ROLE_association') %}
+                            <div class="col-12 text-center mt-5">
+                                <a href="{{ path('app_evenemment_new') }}" 
+                                   class="btn btn-primary btn-lg rounded-pill px-5 py-3">
+                                    <i class="bi bi-plus-circle me-2"></i>Ajouter un Évènement
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Events End -->
 {% endblock %}

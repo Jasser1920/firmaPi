@@ -23,10 +23,10 @@
 </div>
 
 <div class="form-group">
-    {{ form_label(form.description) }}
+    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
     {{ form_widget(form.description, {
         'attr': {
-            'class': 'form-control',
+            'class': 'form-control' ~ (form.description.vars.errors|length > 0 ? ' is-invalid' : ''),
             'placeholder': 'Enter description'
         }
     }) }}
@@ -37,7 +37,7 @@
     {% endif %}
 </div>
 
-<div class="form-group">
+<div class="form-group d-none">
     {{ form_label(form.date) }}
     {{ form_widget(form.date, {
         'attr': {
@@ -52,7 +52,7 @@
     {% endif %}
 </div>
 
-<div class="form-group">
+<div class="form-group d-none">
     {{ form_label(form.evenement) }}
     {{ form_widget(form.evenement, {
         'attr': {

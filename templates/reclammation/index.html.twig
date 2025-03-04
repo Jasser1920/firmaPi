@@ -1,131 +1,186 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Produits{% endblock %}
+{% block title %}Réclamations{% endblock %}
 
 {% block body %}
     <!-- Single Page Header start -->
-    <div class="container-fluid page-header py-5">
-        <h1 class="text-center text-white display-6">Shop</h1>
+    <div class="container-fluid page-header py-5 bg-dark">
+        <h1 class="text-center text-white display-4 fw-bold">Réclamations</h1>
         <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item"><a href="#">Pages</a></li>
-            <li class="breadcrumb-item active text-white">Shop</li>
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="#" class="text-white">Pages</a></li>
+            <li class="breadcrumb-item active text-white">Réclamations</li>
         </ol>
     </div>
     <!-- Single Page Header End -->
 
-    <!-- Fruits Shop Start -->
-    <div class="container-fluid fruite py-5">
+    <!-- Reclamations Start -->
+    <div class="container-fluid py-5 bg-light">
         <div class="container py-5">
-            <h1 class="mb-4">Liste des Produits</h1>
-            <!-- Bouton "Ajoutez une réclamation" placé en haut -->
-            <div class="mb-4">
-                <a href="{{ path('app_reclamation_new') }}" class="btn btn-primary">Ajoutez une réclamation</a>
+            <div class="text-center mb-5">
+                <h4 class="text-primary text-uppercase letter-spacing-2">Réclamations</h4>
+                <h1 class="display-5 fw-bold text-dark mb-4">Gérez Vos Réclamations</h1>
             </div>
-            <div class="row g-4">
-                <div class="col-lg-12">
-                    <div class="row g-4">
-                        <div class="col-xl-3">
-                            <div class="input-group w-100 mx-auto d-flex">
-                                <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                                <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+
+            <!-- Search and Filter -->
+            <div class="row g-4 mb-5">
+                <div class="col-lg-6">
+                    <div class="card shadow-sm border-0 p-4">
+                        <h4 class="text-primary mb-3">Rechercher</h4>
+                        <form action="{{ path('app_reclammation_index') }}" method="get">
+                            <div class="input-group">
+                                <input type="search" name="search" class="form-control rounded-pill" 
+                                       placeholder="Rechercher par titre" value="{{ search|default('') }}">
+                                <button type="submit" class="input-group-text bg-primary text-white border-0">
+                                    <i class="bi bi-search"></i>
+                                </button>
                             </div>
-                        </div>
-                        <div class="col-6"></div>
-                        <div class="col-xl-3">
-                            <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
-                                <label for="fruits">Default Sorting:</label>
-                                <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3" form="fruitform">
-                                    <option value="volvo">Nothing</option>
-                                    <option value="saab">Popularity</option>
-                                    <option value="opel">Organic</option>
-                                    <option value="audi">Fantastic</option>
-                                </select>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card shadow-sm border-0 p-4">
+                        <h4 class="text-primary mb-3">Filtrer par Statut</h4>
+                        <form action="{{ path('app_reclammation_index') }}" method="get">
+                            <input type="hidden" name="search" value="{{ search|default('') }}">
+                            <select name="status" class="form-select rounded-pill" onchange="this.form.submit()">
+                                <option value="" {% if status == '' %}selected{% endif %}>Tous les statuts</option>
+                                {% for status_case in status_cases %}
+                                    <option value="{{ status_case.value }}" {% if status == status_case.value %}selected{% endif %}>
+                                        {{ status_case.label() }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reclamations List -->
+            <div class="row g-4">
+                {% for reclammation in reclammations %}
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm border-0 reclamation-card">
+                            <div class="card-body p-4">
+                                <h5 class="card-title fw-bold text-primary">{{ reclammation.titre }}</h5>
+                                <p class="card-text text-muted">
+                                    {% if reclammation.description|length > 100 %}
+                                        {{ reclammation.description|slice(0, 100) }}...
+                                    {% else %}
+                                        {{ reclammation.description }}
+                                    {% endif %}
+                                </p>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar me-1"></i>
+                                        {{ reclammation.dateCreation ? reclammation.dateCreation|date('Y-m-d') : '' }}
+                                    </small>
+                                    <span class="badge rounded-pill 
+                                        {% if reclammation.statut.value == 'resolue' %}bg-success
+                                        {% elseif reclammation.statut.value == 'rejetee' %}bg-danger
+                                        {% else %}bg-warning{% endif %}">
+                                        {{ reclammation.statut.label() }}
+                                    </span>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    {% if reclammation.reponseReclamations|length > 0 %}
+                                        <button type="button" 
+                                                class="btn btn-outline-info btn-sm" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#repliesModal{{ reclammation.id }}">
+                                            <i class="bi bi-chat me-1"></i>
+                                            {{ reclammation.reponseReclamations|length }} Réponse(s)
+                                        </button>
+                                    {% else %}
+                                        <span class="text-muted small">Aucune réponse</span>
+                                    {% endif %}
+
+                                    {% if reclammation.statut.value != 'resolue' and reclammation.statut.value != 'rejetee' %}
+                                        <a href="{{ path('app_reclammation_edit', {'id': reclammation.id}) }}" 
+                                           class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-pencil me-1"></i>Modifier
+                                        </a>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row g-4">
-                        <div class="col-lg-3">
-                            <!-- Sidebar content (Categories, Price, etc.) -->
-                            <div class="row g-4">
-                                <!-- Price Filter -->
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <h4 class="mb-2">Price</h4>
-                                        <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="amount.value=rangeInput.value">
-                                        <output id="amount" name="amount" min-value="0" max-value="500" for="rangeInput">0</output>
-                                    </div>
-                                </div>
-                                <!-- Additional Filters -->
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <h4>Additional</h4>
-                                        <div class="mb-2">
-                                            <input type="radio" class="me-2" id="Categories-1" name="Categories-1" value="Organic">
-                                            <label for="Categories-1">Organic</label>
-                                        </div>
-                                        <div class="mb-2">
-                                            <input type="radio" class="me-2" id="Categories-2" name="Categories-1" value="Fresh">
-                                            <label for="Categories-2">Fresh</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info text-center" role="alert">
+                            Aucun enregistrement trouvé
                         </div>
-                        <div class="col-lg-9">
-                            <div class="row g-4 justify-content-center">
-                                {% for produit in produits %}
-                                    <div class="col-md-6 col-lg-6 col-xl-4">
-                                        <div class="rounded position-relative fruite-item">
-                                            <div class="fruite-img">
-                                                {% if produit.image %}
-                                                    <img src="{{ produit.image }}" class="img-fluid w-100 rounded-top" alt="{{ produit.nom }}">
-                                                {% else %}
-                                                    <img src="img/default-product.jpg" class="img-fluid w-100 rounded-top" alt="No image">
-                                                {% endif %}
-                                            </div>
-                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">
-                                                {{ produit.categorie ? produit.categorie.nomCategorie : 'Aucune' }}
-                                            </div>
-                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                <h4>{{ produit.nom }}</h4>
-                                                <p>{{ produit.description }}</p>
-                                                <div class="d-flex justify-content-between flex-lg-wrap">
-                                                    <p class="text-dark fs-5 fw-bold mb-0">{{ produit.prix }} €</p>
-                                                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn border border-secondary rounded-pill px-3 text-primary">
-                                                        <i class="fa fa-shopping-bag me-2 text-primary"></i> Voir
-                                                    </a>
-                                                </div>
-                                                <div class="mt-2">
-                                                    <!-- Remplacement du bouton Modifier par une icône -->
-                                                    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-sm text-warning" title="Modifier">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% else %}
-                                    <div class="col-12">
-                                        <p class="text-center">Aucun produit trouvé</p>
-                                    </div>
-                                {% endfor %}
-                                <div class="col-12">
-                                    <div class="pagination d-flex justify-content-center mt-5">
-                                        <a href="#" class="rounded">«</a>
-                                        <a href="#" class="active rounded">1</a>
-                                        <a href="#" class="rounded">2</a>
-                                        <a href="#" class="rounded">3</a>
-                                        <a href="#" class="rounded">»</a>
+                    </div>
+                {% endfor %}
+                
+                <div class="col-12 text-center mt-4">
+                    <a href="{{ path('app_reclammation_new') }}" 
+                       class="btn btn-primary btn-lg rounded-pill px-5 py-3">
+                        <i class="bi bi-plus-circle me-2"></i>Créer une nouvelle réclamation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Reclamations End -->
+
+    <!-- Modals for Replies -->
+    {% for reclammation in reclammations %}
+        {% if reclammation.reponseReclamations|length > 0 %}
+            <div class="modal fade" 
+                 id="repliesModal{{ reclammation.id }}" 
+                 tabindex="-1" 
+                 aria-labelledby="repliesModalLabel{{ reclammation.id }}" 
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="repliesModalLabel{{ reclammation.id }}">
+                                Réponses à la réclamation #{{ reclammation.id }}
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            {% for reponse_reclamation in reclammation.reponseReclamations %}
+                                <div class="card mb-3 border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <p class="mb-2">{{ reponse_reclamation.message }}</p>
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar me-1"></i>
+                                            {{ reponse_reclamation.dateReponse ? reponse_reclamation.dateReponse|date('Y-m-d H:i:s') : '' }}
+                                        </small>
                                     </div>
                                 </div>
-                            </div>
+                            {% else %}
+                                <p class="text-muted">Aucune réponse trouvée</p>
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <a href="{{ path('app_produit_new') }}" class="btn btn-success">Créer un nouveau produit</a>
-        </div>
-    </div>
-    <!-- Fruits Shop End -->
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .reclamation-card {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .reclamation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+        
+        .letter-spacing-2 {
+            letter-spacing: 2px;
+        }
+    </style>
 {% endblock %}

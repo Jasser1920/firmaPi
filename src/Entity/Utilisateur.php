@@ -42,7 +42,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 20)]
     #[Assert\NotBlank(message: "Le numéro de téléphone ne peut pas être vide.")]
-    #[Assert\Regex(pattern: "/^[0-9]{8}$/", message: "Le numéro de téléphone doit contenir exactement 10 chiffres.")]
+    #[Assert\Regex(pattern: "/^[0-9]{8}$/", message: "Le numéro de téléphone doit contenir exactement 8 chiffres.")]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
@@ -54,12 +54,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotNull(message: "Le rôle ne peut pas être nul.")]
     private Role $role;
     
-    #[ORM\Column(type:'string', length:255, nullable:true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $profilePicture;
 
     #[ORM\Column(type: 'boolean')]
     private bool $blocked = false;
-
 
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
@@ -71,30 +70,35 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Don>
      */
     #[ORM\OneToMany(targetEntity: Don::class, mappedBy: 'dons_user')]
+    // Add cascade={"remove"} here if you want automatic deletion
     private Collection $dons;
 
     /**
      * @var Collection<int, Evenemment>
      */
     #[ORM\OneToMany(targetEntity: Evenemment::class, mappedBy: 'utilisateur')]
+    // Add cascade={"remove"} here if you want automatic deletion
     private Collection $evenement;
 
     /**
      * @var Collection<int, Reclammation>
      */
     #[ORM\OneToMany(targetEntity: Reclammation::class, mappedBy: 'utilisateur')]
+    // Add cascade={"remove"} here if you want automatic deletion
     private Collection $reclamation;
 
     /**
      * @var Collection<int, Terrain>
      */
     #[ORM\OneToMany(targetEntity: Terrain::class, mappedBy: 'utilisateur')]
+    // Add cascade={"remove"} here if you want automatic deletion
     private Collection $terrain;
 
     /**
      * @var Collection<int, Produit>
      */
     #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'utilisateur')]
+    // Add cascade={"remove"} here if you want automatic deletion
     private Collection $produit;
 
     public function __construct()
@@ -128,6 +132,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $this->confirmationCode = $confirmationCode;
         return $this;
     }
+
     public function isBlocked(): bool
     {
         return $this->blocked;
@@ -138,6 +143,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $this->blocked = $blocked;
         return $this;
     }
+
     public function getProfilePicture(): ?string
     {
         return $this->profilePicture;
@@ -146,7 +152,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfilePicture(?string $profilePicture): self
     {
         $this->profilePicture = $profilePicture;
-
         return $this;
     }
 

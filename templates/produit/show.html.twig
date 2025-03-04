@@ -3,53 +3,84 @@
 {% block title %}Détails du Produit{% endblock %}
 
 {% block body %}
-    <h1>Détails du Produit</h1>
+    <div class="container-fluid page-header py-5 bg-dark">
+        <h1 class="text-center text-white display-4 fw-bold">{{ produit.nom|default('Produit sans nom') }}</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_produit_index') }}" class="text-white">Produits</a></li>
+            <li class="breadcrumb-item active text-white">Détails</li>
+        </ol>
+    </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>ID</th>
-                <td>{{ produit.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ produit.nom }}</td>
-            </tr>
-            <tr>
-                <th>Prix</th>
-                <td>{{ produit.prix }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ produit.description }}</td>
-            </tr>
-            <tr>
-                <th>Image</th>
-                <td>
-                    {% if produit.image %}
-                        <img src="{{ produit.image }}" alt="{{ produit.nom }}" width="100">
-                    {% else %}
-                        Aucune image disponible
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Quantité</th>
-                <td>{{ produit.quantite }}</td>
-            </tr>
-            <tr>
-                <th>Date d'expiration</th>
-                <td>{{ produit.dateExpiration ? produit.dateExpiration|date('Y-m-d') : 'Non définie' }}</td>
-            </tr>
-            <tr>
-                <th>Catégorie</th>
-                <td>{{ produit.categorie ? produit.categorie.nomCategorie : 'Aucune' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="container-fluid py-5 bg-light">
+        <div class="container py-5">
+            <div class="row justify-content-center g-4">
+                <div class="col-lg-10">
+                    <div class="card product-card shadow-sm border-0">
+                        <div class="row g-0">
+                            <div class="col-lg-6">
+                                <div class="position-relative h-100">
+                                    <img src="{{ produit.image|default(asset('img/default-product.jpg')) }}" 
+                                         class="img-fluid rounded-start w-100 h-100 object-fit-cover" 
+                                         alt="{{ produit.nom|default('Produit') }}">
+                                    <span class="badge bg-primary position-absolute top-0 start-0 m-3">
+                                        {{ produit.categorie ? produit.categorie.nomCategorie : 'Aucune' }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card-body p-5">
+                                    <h2 class="text-primary fw-bold mb-3">{{ produit.nom|default('Produit sans nom') }}</h2>
+                                    <p class="text-muted mb-4">{{ produit.description|default('Aucune description disponible') }}</p>
+                                    <div class="mb-4">
+                                        <p class="mb-2"><i class="bi bi-currency-euro me-2 text-primary"></i><strong>Prix :</strong> {{ produit.prix|default('N/A') }} €</p>
+                                        <p class="mb-2"><i class="bi bi-box-seam me-2 text-primary"></i><strong>Quantité :</strong> {{ produit.quantite|default('N/A') }}</p>
+                                        <p class="mb-0"><i class="bi bi-calendar me-2 text-primary"></i><strong>Date d'expiration :</strong> {{ produit.dateExpiration ? produit.dateExpiration|date('Y-m-d') : 'Non définie' }}</p>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <a href="{{ path('app_produit_index') }}" 
+                                           class="btn btn-outline-secondary btn-lg rounded-pill px-5 py-2">
+                                            <i class="bi bi-arrow-left me-2"></i>Retour à la liste
+                                        </a>
+                                        
+                                        {% if is_granted('ROLE_client') %} 
+                                        <a href="{{ path('app_cart_add', {'id': produit.id}) }}" 
+                                           class="btn btn-outline-primary btn-lg rounded-pill px-5 py-2">
+                                            <i class="fa fa-shopping-cart me-2"></i>Ajouter au panier
+                                        </a>
+                                        {% endif %}
+                                        {% if is_granted('ROLE_agriculture') %} 
+                                        <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" 
+                                           class="btn btn-outline-warning btn-lg rounded-pill px-5 py-2">
+                                            <i class="bi bi-pencil me-2"></i>Modifier
+                                        </a>
+                                        
+                                        {{ include('produit/_delete_form.html.twig') }}
+                                        {% endif %}
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
-    <a href="{{ path('app_produit_index') }}" class="btn btn-secondary">Retour à la liste</a>
-    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning">Modifier</a>
-    <a href="{{ path('app_cart_add', {'id': produit.id}) }}" class="btn btn-primary">Add to Cart</a>
-    {{ include('produit/_delete_form.html.twig') }}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .product-card {
+            transition: transform 0.3s ease-in-out;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+        .letter-spacing-2 {
+            letter-spacing: 2px;
+        }
+    </style>
 {% endblock %}

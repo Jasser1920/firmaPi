@@ -3,65 +3,31 @@
 {% block title %}Paiement de la commande{% endblock %}
 
 {% block body %}
-    <style>
-        body {
-            background-color: #f5f5f5;
-            font-family: 'Arial', sans-serif;
-        }
-        .payment-container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        .payment-header {
-            background-color: #28a745;
-            color: white;
-            padding: 15px;
-            border-radius: 10px 10px 0 0;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        .payment-details {
-            padding: 20px;
-            text-align: center;
-        }
-        .btn-pay {
-            background-color: #ff9500;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1.1rem;
-            transition: background-color 0.3s;
-        }
-        .btn-pay:hover {
-            background-color: #e08500;
-        }
-        .alert {
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 20px;
-        }
-    </style>
+    <div class="container-fluid page-header py-5 bg-dark">
+        <h1 class="text-center text-white display-4 fw-bold">Paiement de la commande</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white">Accueil</a></li>
+            <li class="breadcrumb-item active text-white">Paiement</li>
+        </ol>
+    </div>
 
-    <div class="payment-container">
-        <div class="payment-header">
-            Paiement de votre commande
-        </div>
-
-        {% for message in app.flashes('error') %}
-            <div class="alert alert-danger" role="alert">
-                {{ message }}
+    <div class="container-fluid py-5 bg-light">
+        <div class="container py-5">
+            <div class="card shadow-sm border-0 p-4 text-center">
+                <div class="payment-header bg-success text-white p-3 rounded-top">
+                    <h2 class="mb-0">Paiement de votre commande</h2>
+                </div>
+                <div class="p-4">
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                    <p><strong>Montant total :</strong> {{ commande.total }} €</p>
+                    <p>Vous serez redirigé vers Stripe pour effectuer le paiement sécurisé.</p>
+                    <div id="checkout-button"></div>
+                </div>
             </div>
-        {% endfor %}
-
-        <div class="payment-details">
-            <p><strong>Montant total :</strong> {{ commande.total }} €</p>
-            <p>Vous serez redirigé vers Stripe pour effectuer le paiement sécurisé.</p>
-
-            <div id="checkout-button"></div>
         </div>
     </div>
 

@@ -27,23 +27,23 @@
             {{ form_start(registrationForm, {'attr': {'class': 'form', 'enctype': 'multipart/form-data'}}) }}
 
                 <div class="form-group">
-                    {{ form_row(registrationForm.nom, {'attr': {'class': 'form-control'}, 'label': 'Nom'}) }}
+                    {{ form_row(registrationForm.nom, {'attr': {'class': 'form-control','placeholder': 'Enter votre nom'}, 'label': 'Nom'}) }}
                 </div>
 
                 <div class="form-group">
-                    {{ form_row(registrationForm.prenom, {'attr': {'class': 'form-control'}, 'label': 'Prénom'}) }}
+                    {{ form_row(registrationForm.prenom, {'attr': {'class': 'form-control','placeholder': 'Enter votre prenom'}, 'label': 'Prénom'}) }}
                 </div>
                 
                 <div class="form-group">
-                    {{ form_row(registrationForm.email, {'attr': {'class': 'form-control'}, 'label': 'Email'}) }}
+                    {{ form_row(registrationForm.email, {'attr': {'class': 'form-control','placeholder': 'Enter votre email'}, 'label': 'Email'}) }}
                 </div>
 
                 <div class="form-group">
-                    {{ form_row(registrationForm.telephone, {'attr': {'class': 'form-control'}, 'label': 'Téléphone'}) }}
+                    {{ form_row(registrationForm.telephone, {'attr': {'class': 'form-control','placeholder': 'Enter votre telephone'}, 'label': 'Téléphone'}) }}
                 </div>
 
                 <div class="form-group">
-                    {{ form_row(registrationForm.adresse, {'attr': {'class': 'form-control'}, 'label': 'Adresse'}) }}
+                    {{ form_row(registrationForm.adresse, {'attr': {'class': 'form-control','placeholder': 'Enter votre adresse'}, 'label': 'Adresse'}) }}
                 </div>
 
                 <div class="form-group">
@@ -51,9 +51,9 @@
                 </div>
 
                 <div class="form-group">
-                    {{ form_row(registrationForm.plainPassword, {'attr': {'class': 'form-control'}, 'label': 'Mot de passe'}) }}
+                    {{ form_row(registrationForm.plainPassword, {'attr': {'class': 'form-control','placeholder': 'Enter votre mot de passe'}, 'label': 'Mot de passe'}) }}
                 </div>
-
+               
                 <!-- Add the profile picture field -->
                 <div class="form-group">
                     {{ form_row(registrationForm.profilePicture, {'attr': {'class': 'form-control-file', 'onchange': 'previewImage(event)'}, 'label': 'Photo de profil'}) }}
@@ -63,7 +63,9 @@
                 <div class="form-group" id="image-preview" style="display: none;">
                     <img id="preview" src="#" alt="Aperçu de la photo de profil" style="max-width: 100%; height: auto; margin-top: 10px; border-radius: 5px;">
                 </div>
-
+                <div class="form-group">
+                    {{ form_row(registrationForm.agreeTerms) }}
+                </div>
                 <button type="submit" class="btn btn-primary btn-block">S'inscrire</button>
 
             {{ form_end(registrationForm) }}

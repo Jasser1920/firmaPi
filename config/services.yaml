@@ -23,20 +23,22 @@ services:
         arguments:
             - '%cloudinary_url%'
 
-    # Twilio Client service
-    Twilio\Rest\Client:
+    # Twilio Client
+    twilio.client:
+        class: Twilio\Rest\Client
         arguments:
-            - '%twilio_sid%'
-            - '%twilio_auth_token%'
+            - '%env(TWILIO_SID)%'
+            - '%env(TWILIO_AUTH_TOKEN)%'
 
-    # Explicit controller configurations
+    # ReclammationCrudController with Twilio
     App\Controller\Admin\ReclammationCrudController:
         arguments:
-            $twilio: '@Twilio\Rest\Client'
+            $twilio: '@twilio.client'
 
+    # ReponseReclamationController with Twilio
     App\Controller\ReponseReclamationController:
         arguments:
-            $twilio: '@Twilio\Rest\Client'
+            $twilio: '@twilio.client'
 
     App\Controller\ProfileController:
         arguments:

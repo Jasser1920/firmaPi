@@ -1,15 +1,55 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Reclammation{% endblock %}
+{% block title %}Nouvelle Réclamation{% endblock %}
 
 {% block body %}
-<div class="login-container">
-       <div class="login-box-produit-add" >
-    <h1>Create new Reclammation</h1>
-
-    {{ include('reclammation/_form.html.twig') }}
-
-    <a href="{{ path('app_reclammation_index') }}">back to list</a>
+    <!-- Single Page Header start -->
+    <div class="container-fluid page-header py-5 bg-dark">
+        <h1 class="text-center text-white display-4 fw-bold">Nouvelle Réclamation</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_reclammation_index') }}" class="text-white">Réclamations</a></li>
+            <li class="breadcrumb-item active text-white">Nouveau</li>
+        </ol>
     </div>
+    <!-- Single Page Header End -->
+
+    <!-- Form Start -->
+    <div class="container-fluid py-5 bg-light">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10">
+                    <div class="text-center mb-5">
+                        <h4 class="text-primary text-uppercase letter-spacing-2">Créer une Réclamation</h4>
+                        <h1 class="display-5 fw-bold text-dark mb-4">Soumettez Votre Demande</h1>
+                    </div>
+                    
+                    {{ include('reclammation/_form.html.twig') }}
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- Form End -->
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .card {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+        
+        .letter-spacing-2 {
+            letter-spacing: 2px;
+        }
+        
+        .form-control-lg {
+            border-radius: 0.5rem;
+        }
+    </style>
 {% endblock %}

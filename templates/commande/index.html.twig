@@ -3,41 +3,57 @@
 {% block title %}Liste des Commandes{% endblock %}
 
 {% block body %}
-<div class="login-container">
-        <div class="login-box-produit">
-    <h1>Liste des Commandes</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Date de commande</th>
-                <th>Total</th>
-                <th>Statut</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for commande in commandes %}
-            <tr>
-                <td>{{ commande.id }}</td>
-                <td>{{ commande.dateCommande ? commande.dateCommande|date('Y-m-d H:i:s') : 'N/A' }}</td>
-                <td>{{ commande.total|number_format(2, ',', ' ') }} €</td>
-                <td>{{ commande.statut.label() }}</td> {# Assure-toi que label() existe dans ton Enum #}
-                <td>
-                    <a href="{{ path('app_commande_show', {'id': commande.id}) }}" class="btn btn-info btn-sm">Voir</a>
-                    <a href="{{ path('app_commande_edit', {'id': commande.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5" class="text-center">Aucun enregistrement trouvé.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_commande_new') }}" class="btn btn-success">Créer une nouvelle commande</a>
+    <div class="container-fluid page-header py-5 bg-dark">
+        <h1 class="text-center text-white display-4 fw-bold">Liste des Commandes</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white">Accueil</a></li>
+            <li class="breadcrumb-item active text-white">Commandes</li>
+        </ol>
     </div>
+
+    <div class="container-fluid py-5 bg-light">
+        <div class="container py-5">
+            <div class="card shadow-sm border-0 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="text-primary mb-0">Commandes</h4>
+                    <a href="{{ path('app_commande_new') }}" class="btn btn-primary btn-sm rounded-pill">
+                        <i class="bi bi-plus-circle me-1"></i>Créer une commande
+                    </a>
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date de commande</th>
+                            <th>Total</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for commande in commandes %}
+                            <tr>
+                                <td>{{ commande.id }}</td>
+                                <td>{{ commande.dateCommande|date('Y-m-d H:i:s') }}</td>
+                                <td>{{ commande.total|number_format(2, ',', ' ') }} €</td>
+                                <td>{{ commande.statut.label() }}</td>
+                                <td>
+                                    <a href="{{ path('app_commande_show', {'id': commande.id}) }}" class="btn btn-outline-primary btn-sm rounded-pill">
+                                        <i class="bi bi-eye me-1"></i>Voir
+                                    </a>
+                                    <a href="{{ path('app_commande_edit', {'id': commande.id}) }}" class="btn btn-outline-warning btn-sm rounded-pill">
+                                        <i class="bi bi-pencil me-1"></i>Modifier
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">Aucune commande trouvée.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 {% endblock %}

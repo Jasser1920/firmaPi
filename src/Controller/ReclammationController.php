@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Reclammation;
-
 use App\Entity\Utilisateur;
 use App\Enum\StatutReclammation;
 use App\Form\ReclammationType;
@@ -14,10 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Security;
+
 #[Route('/reclammation')]
 final class ReclammationController extends AbstractController
 {
-    private $security; 
+    private $security;
 
     public function __construct(Security $security)
     {
@@ -25,15 +25,55 @@ final class ReclammationController extends AbstractController
     }
 
     #[Route(name: 'app_reclammation_index', methods: ['GET'])]
-    public function index(ReclammationRepository $reclammationRepository): Response
+    public function index(Request $request, ReclammationRepository $reclammationRepository): Response
     {
         $user = $this->security->getUser();
-        $reclammations = $user instanceof Utilisateur 
-            ? $reclammationRepository->findBy(['utilisateur' => $user]) 
-            : [];
-    
+        
+        // Get search and filter parameters
+        $search = $request->query->get('search', '');
+        $statusFilter = $request->query->get('status', '');
+
+        // Build query
+        $qb = $reclammationRepository->createQueryBuilder('r');
+        
+        // Filter by user if authenticated
+        if ($user instanceof Utilisateur) {
+            $qb->andWhere('r.utilisateur = :user')
+               ->setParameter('user', $user);
+        } else {
+            $qb->andWhere('1 = 0'); // Return empty result if no user
+        }
+
+        // Search by title
+        if ($search) {
+            $qb->andWhere('r.titre LIKE :search')
+               ->setParameter('search', "%$search%");
+        }
+
+        // Filter by status
+        if ($statusFilter) {
+            try {
+                $statusEnum = StatutReclammation::from($statusFilter);
+                $qb->andWhere('r.statut = :status')
+                   ->setParameter('status', $statusEnum);
+            } catch (\ValueError $e) {
+                // Invalid status value; ignore the filter
+            }
+        }
+
+        // Order by date_creation
+        $qb->orderBy('r.date_creation', 'DESC');
+        
+        $reclammations = $qb->getQuery()->getResult();
+
+        // Get all possible status values for the filter
+        $statusCases = StatutReclammation::cases();
+
         return $this->render('reclammation/index.html.twig', [
             'reclammations' => $reclammations,
+            'search' => $search,
+            'status' => $statusFilter,
+            'status_cases' => $statusCases,
         ]);
     }
 
@@ -50,11 +90,11 @@ final class ReclammationController extends AbstractController
             $reclammation->setUtilisateur($user);
         }
         
-    // Set the date_creation field to the current date and time
-    $reclammation->setDateCreation(new \DateTime());
+        // Set the date_creation field to the current date and time (already set in constructor)
+        $reclammation->setDateCreation(new \DateTime());
 
-    // Set the statut field to a default value (e.g., the first enum value)
-    $reclammation->setStatut(StatutReclammation::EN_ATTENTE);
+        // Set the statut field to a default value (already set in constructor)
+        $reclammation->setStatut(StatutReclammation::EN_ATTENTE);
     
         $form = $this->createForm(ReclammationType::class, $reclammation);
         $form->handleRequest($request);
@@ -62,7 +102,7 @@ final class ReclammationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($reclammation);
             $entityManager->flush();
-    
+            $this->addFlash('success', 'Réclamation créée avec succès!');
             return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
     
@@ -88,13 +128,13 @@ final class ReclammationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+            $this->addFlash('success', 'Réclamation modifiée avec succès!');
             return $this->redirectToRoute('app_reclammation_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('reclammation/edit.html.twig', [
             'reclammation' => $reclammation,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -104,6 +144,7 @@ final class ReclammationController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$reclammation->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($reclammation);
             $entityManager->flush();
+            $this->addFlash('success', 'Réclamation supprimée avec succès!');
         }
 
         return $this->redirectToRoute('app_reclammation_index', [], Response::HTTP_SEE_OTHER);

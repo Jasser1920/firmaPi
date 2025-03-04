@@ -1,158 +1,163 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Terrain Index{% endblock %}
+{% block title %}Terrains{% endblock %}
 
-{% block page_header_title %}Terrains{% endblock %}
-{% block page_header_active %}Terrains{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{ asset('lib/lightbox/css/lightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <style>
+        .terrain-card {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .terrain-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+        
+        .letter-spacing-2 {
+            letter-spacing: 2px;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <div class="container-fluid fruite py-5">
-        <div class="container py-5">
-            <h1 class="mb-4">Liste des terrains disponibles</h1>
+    <!-- Single Page Header start -->
+    <div class="container-fluid page-header py-5 bg-dark">
+        <h1 class="text-center text-white display-4 fw-bold">Terrains</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white">Accueil</a></li>
+            <li class="breadcrumb-item active text-white">Terrains</li>
+        </ol>
+    </div>
+    <!-- Single Page Header End -->
 
-            {# Affichage des messages flash #}
-            {% for message in app.flashes('success') %}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-            {% for message in app.flashes('error') %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
+    <!-- Terrains Start -->
+    <div class="container-fluid py-5 bg-light">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h4 class="text-primary text-uppercase letter-spacing-2">Terrains</h4>
+                <h1 class="display-5 fw-bold text-dark mb-4">Découvrez Nos Terrains</h1>
+            </div>
 
             <div class="row g-4">
-                <div class="col-lg-12">
-                    <div class="row g-4">
-                        <div class="col-xl-3">
-                            <div class="input-group w-100 mx-auto d-flex">
-                                <input type="search" class="form-control p-3" placeholder="Rechercher un terrain" aria-describedby="search-icon-1">
-                                <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                <div class="col-lg-3">
+                    <!-- Search -->
+                    <div class="card shadow-sm border-0 p-4 mb-4">
+                        <h4 class="text-primary mb-3">Rechercher</h4>
+                        <form action="{{ path('app_terrain_index') }}" method="get">
+                            <div class="input-group">
+                                <input type="search" name="search" class="form-control rounded-pill" 
+                                       placeholder="Rechercher un terrain" value="{{ search }}">
+                                <button type="submit" class="input-group-text bg-primary text-white border-0">
+                                    <i class="fa fa-search"></i>
+                                </button>
                             </div>
-                        </div>
-                        <div class="col-6"></div>
-                        <div class="col-xl-3">
-                            <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
-                                <label for="terrains">Trier par :</label>
-                                <select id="terrains" name="terrainlist" class="border-0 form-select-sm bg-light me-3">
-                                    <option value="none">Aucun</option>
-                                    <option value="price">Prix</option>
-                                    <option value="size">Superficie</option>
-                                    <option value="date">Date</option>
-                                </select>
-                            </div>
-                        </div>
+                        </form>
                     </div>
+
+                    <!-- Price Filter -->
+                    <div class="card shadow-sm border-0 p-4 mb-4">
+                        <h4 class="text-primary mb-3">Filtrer par Prix</h4>
+                        <form action="{{ path('app_terrain_index') }}" method="get">
+                            <input type="hidden" name="search" value="{{ search }}">
+                            <input type="hidden" name="sort" value="{{ sort }}">
+                            <div class="mb-3">
+                                <label for="priceRange" class="form-label">Prix maximum:</label>
+                                <input type="range" class="form-range" id="priceRange" name="price" 
+                                       min="0" max="10000" value="{{ price }}" 
+                                       oninput="priceOutput.value=priceRange.value">
+                                <output id="priceOutput" for="priceRange" class="text-muted">{{ price }}</output> DT
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" name="price" value="1000" class="btn btn-outline-primary btn-sm rounded-pill">
+                                    Moins de 1000 DT
+                                </button>
+                                <button type="submit" name="price" value="5000" class="btn btn-outline-primary btn-sm rounded-pill">
+                                    Moins de 5000 DT
+                                </button>
+                                <button type="submit" name="price" value="0" class="btn btn-outline-secondary btn-sm rounded-pill">
+                                    Réinitialiser
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-lg-9">
+                    <!-- Sorting -->
+                    <div class="card shadow-sm border-0 p-4 mb-4">
+                        <form action="{{ path('app_terrain_index') }}" method="get" class="d-flex justify-content-between align-items-center">
+                            <input type="hidden" name="search" value="{{ search }}">
+                            <input type="hidden" name="price" value="{{ price }}">
+                            <h4 class="text-primary mb-0">Trier par :</h4>
+                            <select class="form-select w-50 rounded-pill" name="sort" onchange="this.form.submit()">
+                                <option value="price" {{ sort == 'price' ? 'selected' : '' }}>Prix</option>
+                                <option value="size" {{ sort == 'size' ? 'selected' : '' }}>Superficie</option>
+                                <option value="date" {{ sort == 'date' ? 'selected' : '' }}>Date</option>
+                            </select>
+                        </form>
+                    </div>
+
+                    <!-- Terrains Grid -->
                     <div class="row g-4">
-                        <div class="col-lg-3">
-                            <div class="row g-4">
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <h4>Catégories</h4>
-                                        <ul class="list-unstyled fruite-categorie">
-                                            <li>
-                                                <div class="d-flex justify-content-between fruite-name">
-                                                    <a href="#"><i class="fas fa-leaf me-2"></i>Terrains agricoles</a>
-                                                    <span>({{ terrains|length }})</span>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="d-flex justify-content-between fruite-name">
-                                                    <a href="#"><i class="fas fa-leaf me-2"></i>Terrains urbains</a>
-                                                    <span>(0)</span>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <h4>Prix</h4>
-                                        <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="10000" value="0" oninput="amount.value=rangeInput.value">
-                                        <output id="amount" name="amount" min-value="0" max-value="10000" for="rangeInput">0</output> DT
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <h4>Filtrer par Disponibilité</h4>
-                                        <div class="mb-2">
-                                            <input type="radio" class="me-2" id="disponible" name="disponibilite" value="disponible">
-                                            <label for="disponible">Disponible</label>
-                                        </div>
-                                        <div class="mb-2">
-                                            <input type="radio" class="me-2" id="indisponible" name="disponibilite" value="indisponible">
-                                            <label for="indisponible">Indisponible</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <h4 class="mb-3">Terrains populaires</h4>
-                                    {% for terrain in terrains|slice(0, 3) %}
-                                        <div class="d-flex align-items-center justify-content-start mb-3">
-                                            <div>
-                                                <h6 class="mb-2">{{ terrain.description }}</h6>
-                                                <p class="mb-0">Prix : {{ terrain.prixLocation }} DT | Superficie : {{ terrain.superficie }} m²</p>
+                        {% if terrains is not empty %}
+                            {% for terrain in terrains %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card terrain-card shadow-sm border-0 h-100">
+                                        <div class="card-body p-4">
+                                            <h5 class="card-title fw-bold text-primary">{{ terrain.description }}</h5>
+                                            <p class="card-text text-muted">
+                                                Superficie : {{ terrain.superficie }} m² | Prix : {{ terrain.prixLocation }} DT
+                                            </p>
+                                            <div class="d-flex justify-content-between mb-3">
+                                                <small class="text-muted"><i class="bi bi-calendar me-1"></i>{{ terrain.dateCreation ? terrain.dateCreation|date('Y-m-d') : '' }}</small>
+                                                <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>{{ terrain.latitude }}, {{ terrain.longitude }}</small>
                                             </div>
-                                        </div>
-                                    {% endfor %}
-                                    <div class="d-flex justify-content-center my-4">
-                                        <a href="#" class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">Voir plus</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-9">
-                            <div class="row g-4 justify-content-center">
-                                {% for terrain in terrains %}
-                                    <div class="col-md-6 col-lg-6 col-xl-4">
-                                        <div class="rounded position-relative fruite-item" style="min-height: 300px; max-height: 350px;">
-                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom d-flex flex-column justify-content-between" style="height: 100%;">
-                                                <div>
-                                                    <h4 class="mb-3">{{ terrain.description }}</h4>
-                                                    <p class="mb-3">Superficie : {{ terrain.superficie }} m² | Prix : {{ terrain.prixLocation }} DT</p>
-                                                    <p class="text-dark fs-5 fw-bold mb-3">Disponibilité : {{ terrain.disponibilite ? 'Oui' : 'Non' }}</p>
-                                                </div>
-                                                <div>
-                                                    <div class="d-flex justify-content-between mb-3">
-                                                        <div>
-                                                            <a href="{{ path('app_terrain_show', {'id': terrain.id}) }}" class="btn btn-info me-2">Voir</a>
-                                                            {# Afficher "Louer" uniquement si le terrain est disponible #}
-                                                            {% if terrain.disponibilite %}
-                                                                <a href="{{ path('app_location_rent', {'id': terrain.id}) }}" class="btn btn-success me-2">Louer</a>
-                                                            {% endif %}
-                                                        </div>
-                                                    </div>
-                                                    <small class="text-muted">Créé le : {{ terrain.dateCreation ? terrain.dateCreation|date('Y-m-d') : '' }}</small>
-                                                </div>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <a href="{{ path('app_terrain_show', {'id': terrain.id}) }}" 
+                                                   class="btn btn-outline-primary btn-sm rounded-pill">
+                                                    <i class="fa fa-info-circle me-1"></i>Détails
+                                                </a>
+                                                {% if terrain.disponibilite %}
+                                                    <a href="{{ path('app_location_rent', {'id': terrain.id}) }}" 
+                                                       class="btn btn-outline-success btn-sm rounded-pill">
+                                                        <i class="fa fa-check me-1"></i>Louer
+                                                    </a>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
-                                {% else %}
-                                    <div class="col-12">
-                                        <p class="text-center">Aucun terrain trouvé</p>
-                                    </div>
-                                {% endfor %}
-                            </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
                             <div class="col-12">
-                                <div class="pagination d-flex justify-content-center mt-5">
-                                    <a href="#" class="rounded">«</a>
-                                    <a href="#" class="active rounded">1</a>
-                                    <a href="#" class="rounded">2</a>
-                                    <a href="#" class="rounded">3</a>
-                                    <a href="#" class="rounded">4</a>
-                                    <a href="#" class="rounded">5</a>
-                                    <a href="#" class="rounded">6</a>
-                                    <a href="#" class="rounded">»</a>
+                                <div class="alert alert-info text-center" role="alert">
+                                    Aucun terrain trouvé
                                 </div>
                             </div>
-                        </div>
+                        {% endif %}
+
+                       {% if is_granted('ROLE_agriculture') %} 
+                            <div class="col-12 text-center mt-5">
+                                <a href="{{ path('app_terrain_new') }}" 
+                                   class="btn btn-primary btn-lg rounded-pill px-5 py-3">
+                                    <i class="bi bi-plus-circle me-2"></i>Ajouter un Terrain
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
-                    <a href="{{ path('app_terrain_new') }}" class="btn border border-secondary rounded-pill px-3 text-primary mt-3">Créer un nouveau terrain</a>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Terrains End -->
 {% endblock %}

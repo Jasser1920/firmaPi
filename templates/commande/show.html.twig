@@ -1,41 +1,49 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Commande{% endblock %}
+{% block title %}Commande #{{ commande.id }}{% endblock %}
 
 {% block body %}
-    <h1>Commande</h1>
+    <div class="container-fluid page-header py-5 bg-dark">
+        <h1 class="text-center text-white display-4 fw-bold">Détails de la commande</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-white">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_commande_index') }}" class="text-white">Commandes</a></li>
+            <li class="breadcrumb-item active text-white">Détails</li>
+        </ol>
+    </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ commande.id }}</td>
-            </tr>
-            <tr>
-                <th>Date_commande</th>
-                <td>{{ commande.dateCommande ? commande.dateCommande|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Total</th>
-                <td>{{ commande.total }}</td>
-            </tr>
-            <tr>
-                <th>Statut</th>
-                <td>{{ commande.statut.label() }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_commande_index') }}">back to list</a>
-
-    <a href="{{ path('app_commande_edit', {'id': commande.id}) }}">edit</a>
-
-    {{ include('commande/_delete_form.html.twig') }}
-    <a href="{{ path('app_commande_generate_invoice', {'id': commande.id}) }}" class="btn btn-primary" target="_blank">
-        Générer la facture (PDF)
-    </a>
-
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">{{ message }}</div>
-    {% endfor %}
+    <div class="container-fluid py-5 bg-light">
+        <div class="container py-5">
+            <div class="card shadow-sm border-0 p-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2 class="text-primary fw-bold mb-3">Commande #{{ commande.id }}</h2>
+                        <p class="text-muted mb-4">Date de commande : {{ commande.dateCommande|date('Y-m-d H:i:s') }}</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="{{ path('app_commande_index') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+                                <i class="bi bi-arrow-left me-1"></i>Retour
+                            </a>
+                            <a href="{{ path('app_commande_edit', {'id': commande.id}) }}" class="btn btn-outline-warning btn-sm rounded-pill">
+                                <i class="bi bi-pencil me-1"></i>Modifier
+                            </a>
+                            {{ include('commande/_delete_form.html.twig') }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <p><strong>Total :</strong> {{ commande.total }} €</p>
+                        <p><strong>Statut :</strong> {{ commande.statut.label() }}</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <a href="{{ path('app_commande_generate_invoice', {'id': commande.id}) }}" class="btn btn-primary btn-sm rounded-pill" target="_blank">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Générer la facture
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

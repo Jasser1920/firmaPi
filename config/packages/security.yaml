@@ -33,6 +33,7 @@ security:
         - { path: ^/, roles: PUBLIC_ACCESS }
         - { path: ^/verify/code, roles: PUBLIC_ACCESS }
         - { path: ^/profile,roles: IS_AUTHENTICATED_FULLY,requires_channel: https}
+        - { path: ^/admin/reclamation/.+/reply, roles: IS_AUTHENTICATED_FULLY }
         # Example: Restrict access to /profile to authenticated users
         # - { path: ^/profile, roles: ROLE_USER }
 

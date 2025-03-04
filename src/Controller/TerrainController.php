@@ -15,10 +15,49 @@ use Symfony\Component\Routing\Attribute\Route;
 final class TerrainController extends AbstractController
 {
     #[Route(name: 'app_terrain_index', methods: ['GET'])]
-    public function index(TerrainRepository $terrainRepository): Response
+    public function index(Request $request, TerrainRepository $terrainRepository): Response
     {
+        $search = $request->query->get('search', '');
+        $price = $request->query->get('price', '');
+        $sort = $request->query->get('sort', '');
+    
+        $queryBuilder = $terrainRepository->createQueryBuilder('t');
+    
+        // Filter by user role
+        if ($this->isGranted('ROLE_AGRICULTURE')) {
+            $user = $this->getUser();
+            $queryBuilder
+                ->andWhere('t.user = :user')
+                ->setParameter('user', $user);
+        }
+    
+        if (!empty($search)) {
+            $queryBuilder
+                ->andWhere('t.description LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+    
+        if (!empty($price) && is_numeric($price)) {
+            $queryBuilder
+                ->andWhere('t.prixLocation <= :price')
+                ->setParameter('price', $price);
+        }
+    
+        if ($sort === 'price') {
+            $queryBuilder->orderBy('t.prixLocation', 'ASC');
+        } elseif ($sort === 'size') {
+            $queryBuilder->orderBy('t.superficie', 'ASC');
+        } elseif ($sort === 'date') {
+            $queryBuilder->orderBy('t.dateCreation', 'DESC');
+        }
+    
+        $terrains = $queryBuilder->getQuery()->getResult();
+    
         return $this->render('terrain/index.html.twig', [
-            'terrains' => $terrainRepository->findAll(),
+            'terrains' => $terrains,
+            'search' => $search,
+            'price' => $price,
+            'sort' => $sort,
         ]);
     }
 
@@ -29,20 +68,11 @@ final class TerrainController extends AbstractController
         $form = $this->createForm(TerrainType::class, $terrain);
         $form->handleRequest($request);
 
-        // Débogage : vérifier l'état du formulaire uniquement si soumis
-        if ($form->isSubmitted()) {
-            dump($form->isSubmitted(), $form->isValid(), $form->getErrors(true));
-        } else {
-            dump($form->isSubmitted(), 'Formulaire non soumis', null);
-        }
-
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($terrain);
             $entityManager->flush();
             $this->addFlash('success', 'Le terrain a été ajouté avec succès !');
-            return $this->redirectToRoute('app_terrain_index', [], Response::HTTP_SEE_OTHER);
-        } elseif ($form->isSubmitted() && !$form->isValid()) {
-            $this->addFlash('error', 'Erreur lors de l\'ajout du terrain. Vérifiez les champs.');
+            return $this->redirectToRoute('app_terrain_index');
         }
 
         return $this->render('terrain/new.html.twig', [
@@ -51,20 +81,11 @@ final class TerrainController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_terrain_show', methods: ['GET', 'POST'])]
-    public function show(Request $request, Terrain $terrain, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(TerrainType::class, $terrain);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-            $this->addFlash('success', 'Terrain mis à jour avec succès !');
-            return $this->redirectToRoute('app_terrain_show', ['id' => $terrain->getId()]);
-        }
-
+    #[Route('/{id}', name: 'app_terrain_show', methods: ['GET'])]
+    public function show(Terrain $terrain): Response
+    {$form = $this->createForm(TerrainType::class, $terrain);
         return $this->render('terrain/show.html.twig', [
-            'terrain' => $terrain,
+            'terrain' => $terrain, // Pass the Terrain entity
             'form' => $form->createView(),
         ]);
     }
@@ -78,7 +99,7 @@ final class TerrainController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
             $this->addFlash('success', 'Terrain mis à jour avec succès !');
-            return $this->redirectToRoute('app_terrain_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_terrain_index');
         }
 
         return $this->render('terrain/edit.html.twig', [
@@ -98,6 +119,6 @@ final class TerrainController extends AbstractController
             $this->addFlash('error', 'Échec de la suppression du terrain.');
         }
 
-        return $this->redirectToRoute('app_terrain_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_terrain_index');
     }
 }

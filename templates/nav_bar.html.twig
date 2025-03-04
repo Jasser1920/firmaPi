@@ -4,9 +4,9 @@
             <div class="top-info ps-2">
                 {% if app.user %}
                     <small class="me-3">
-                        <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}" alt="Profile Picture" class="rounded-circle" style="width: 30px; height: 30px;">
+                        <img src="{{ app.user.profilePicture }}" alt="Profile Picture" class="rounded-circle" style="width: 30px; height: 30px;">
                         <i class="fas fa-user me-2 text-secondary"></i> 
-                        <a href="#" class="text-white">{{ app.user.nom }} {{ app.user.prenom }}</a>
+                        <a href="#" class="text-white">{{ app.user.nom }} {{ app.user.prenom }} ({{ app.user.role.value|capitalize }})</a>
                     </small>
                     <small class="me-3">
                         <i class="fas fa-envelope me-2 text-secondary"></i>
@@ -28,15 +28,23 @@
             </button>
             <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                 <div class="navbar-nav mx-auto">
-                    <a href="{{ path('app_evenemment_index') }}" class="nav-item nav-link">evenement</a>
-                    
+                    <a href="{{ path('app_evenemment_index') }}" class="nav-item nav-link">Evenement</a>
+                    {% if is_granted('ROLE_client') or is_granted('ROLE_agriculture') %}
+                    <a href="{{ path('app_terrain_index') }}" class="nav-item nav-link">Terrain</a>
+                     {% endif %}
+                    {% if is_granted('ROLE_client') %} 
+                    <a href="{{ path('app_produit_index') }}" class="nav-item nav-link">Shop</a>
+                    {% endif %}
+                    {% if is_granted('ROLE_agriculture') %} 
+                    <a href="{{ path('app_produit_index') }}" class="nav-item nav-link">Mes Produit</a>
+                    {% endif %}
                 </div>
                 <div class="d-flex m-3 me-0">
                     
                         <a href="{{ path('app_cart_show') }}" class="position-relative me-4 my-auto">
                             <i class="fa fa-shopping-bag fa-2x"></i>
                             <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">
-                                {{ app.session.get('cart', [])|length }}
+                                {{ app.session.get('cart', [])|length }}    
                             </span>
                         </a>
                     <div class="nav-item dropdown">
@@ -45,7 +53,10 @@
                                 <i class="fas fa-user fa-2x"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end border-0 rounded-0 bg-secondary" aria-labelledby="profileDropdown">
-                            <a href="{{ path('app_reclammation_index') }}" class="dropdown-item text-white">Passe reclamation</a>
+                            {% if is_granted('ROLE_agriculture') %} 
+                            <a href="{{ path('app_categorie_index') }}" class="dropdown-item text-white">Categorie</a>
+                            {% endif %}
+                            <a href="{{ path('app_reclammation_index') }}" class="dropdown-item text-white">Reclamation</a>
                                 <a href="{{ path('app_profiledetails') }}" class="dropdown-item text-white">Profile</a>
                                 <a href="{{ path('app_logout') }}" class="dropdown-item text-white">Disconnect</a>
                             </div>
